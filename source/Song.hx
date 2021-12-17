@@ -43,8 +43,8 @@ class Song
 
 	public static function loadFromJson(jsonInput:String, ?folder:String, ?mods:Bool = false, ?modfolder:String = ''):SwagSong
 	{
-		var folder = mods ? "assets" : "mods";
-		var rawJson = Assets.getText(folder + modfolder + "/data/" + folder.toLowerCase() + '/' + jsonInput.toLowerCase() + ".json").trim();
+		var startFolder = mods ? "mods" : "assets";
+		var rawJson = Assets.getText(startFolder + modfolder + "/data/" + folder.toLowerCase() + '/' + jsonInput.toLowerCase() + ".json").trim();
 		/*dumb explination here, first we have the game check through all da folders within the mods 
 		folder then if it has the json we are looking for we break outta the loop with da json,
 		if not it will end up with a normal game json from da files*/
