@@ -46,12 +46,14 @@ using StringTools;
 
 class PlayState extends MusicBeatState
 {
+	public var HscriptStage:HscriptUtilities;
 	public static var curStage:String = '';
 	public static var SONG:SwagSong;
 	public static var isStoryMode:Bool = false;
 	public static var storyWeek:Int = 0;
 	public static var storyPlaylist:Array<String> = [];
 	public static var storyDifficulty:Int = 1;
+	public static var modsongs:Bool = false;
 
 	var halloweenLevel:Bool = false;
 
@@ -226,27 +228,33 @@ class PlayState extends MusicBeatState
 		// Updating Discord Rich Presence.
 		DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconRPC);
 		#end
-
-		switch (SONG.song.toLowerCase())
+		if(SONG.stage != null){
+			if(Assets.exists("assets/stages/" + curStage + ".hx")){
+				HscriptStage.init(this);
+				HscriptStage.execute(Assets.getText("assets/stages/" + curStage + ".hx"));
+				HscriptStage.RunFunct("init");
+			}
+		}
+		switch (SONG.stage)
 		{
-                        case 'spookeez' | 'monster' | 'south': 
+                        case 'Spooky': 
                         {
-                                curStage = 'spooky';
-	                          halloweenLevel = true;
+                            curStage = 'spooky';
+	                        halloweenLevel = true;
 
-		                  var hallowTex = Paths.getSparrowAtlas('halloween_bg');
+		                  	var hallowTex = Paths.getSparrowAtlas('halloween_bg');
 
-	                          halloweenBG = new FlxSprite(-200, -100);
-		                  halloweenBG.frames = hallowTex;
-	                          halloweenBG.animation.addByPrefix('idle', 'halloweem bg0');
-	                          halloweenBG.animation.addByPrefix('lightning', 'halloweem bg lightning strike', 24, false);
-	                          halloweenBG.animation.play('idle');
-	                          halloweenBG.antialiasing = true;
-	                          add(halloweenBG);
+	                        halloweenBG = new FlxSprite(-200, -100);
+		                    halloweenBG.frames = hallowTex;
+	                        halloweenBG.animation.addByPrefix('idle', 'halloweem bg0');
+	                        halloweenBG.animation.addByPrefix('lightning', 'halloweem bg lightning strike', 24, false);
+	                        halloweenBG.animation.play('idle');
+	                        halloweenBG.antialiasing = true;
+	                        add(halloweenBG);
 
-		                  isHalloween = true;
+		                  	isHalloween = true;
 		          }
-		          case 'pico' | 'blammed' | 'philly': 
+		          case 'Street': 
                         {
 		                  curStage = 'philly';
 
@@ -288,7 +296,7 @@ class PlayState extends MusicBeatState
 		                  var street:FlxSprite = new FlxSprite(-40, streetBehind.y).loadGraphic(Paths.image('philly/street'));
 	                          add(street);
 		          }
-		          case 'milf' | 'satin-panties' | 'high':
+		          case 'Limo':
 		          {
 		                  curStage = 'limo';
 		                  defaultCamZoom = 0.90;
@@ -315,14 +323,14 @@ class PlayState extends MusicBeatState
 		                  }
 
 		                  var overlayShit:FlxSprite = new FlxSprite(-500, -600).loadGraphic(Paths.image('limo/limoOverlay'));
-		                  overlayShit.alpha = 0.5;
-		                  // add(overlayShit);
+		                  overlayShit.alpha = 0.390;
+		                  add(overlayShit);
 
-		                  // var shaderBullshit = new BlendModeEffect(new OverlayShader(), FlxColor.RED);
+		                  var shaderBullshit = new BlendModeEffect(new OverlayShader(), FlxColor.RED);
 
-		                  // FlxG.camera.setFilters([new ShaderFilter(cast shaderBullshit.shader)]);
+		                  FlxG.camera.setFilters([new ShaderFilter(cast shaderBullshit.shader)]);
 
-		                  // overlayShit.shader = shaderBullshit;
+		                  overlayShit.shader = cast shaderBullshit;
 
 		                  var limoTex = Paths.getSparrowAtlas('limo/limoDrive');
 
@@ -335,7 +343,7 @@ class PlayState extends MusicBeatState
 		                  fastCar = new FlxSprite(-300, 160).loadGraphic(Paths.image('limo/fastCarLol'));
 		                  // add(limo);
 		          }
-		          case 'cocoa' | 'eggnog':
+		          case 'Christmas':
 		          {
 	                          curStage = 'mall';
 
@@ -391,7 +399,7 @@ class PlayState extends MusicBeatState
 		                  santa.antialiasing = true;
 		                  add(santa);
 		          }
-		          case 'winter-horrorland':
+		          case 'Christmas-evil':
 		          {
 		                  curStage = 'mallEvil';
 		                  var bg:FlxSprite = new FlxSprite(-400, -500).loadGraphic(Paths.image('christmas/evilBG'));
@@ -411,7 +419,7 @@ class PlayState extends MusicBeatState
 	                          evilSnow.antialiasing = true;
 		                  add(evilSnow);
                         }
-		          case 'senpai' | 'roses':
+		          case 'School':
 		          {
 		                  curStage = 'school';
 
@@ -478,7 +486,7 @@ class PlayState extends MusicBeatState
 		                  bgGirls.updateHitbox();
 		                  add(bgGirls);
 		          }
-		          case 'thorns':
+		          case 'School-evil':
 		          {
 		                  curStage = 'schoolEvil';
 
@@ -495,80 +503,39 @@ class PlayState extends MusicBeatState
 		                  bg.scrollFactor.set(0.8, 0.9);
 		                  bg.scale.set(6, 6);
 		                  add(bg);
-
-		                  /* 
-		                           var bg:FlxSprite = new FlxSprite(posX, posY).loadGraphic(Paths.image('weeb/evilSchoolBG'));
-		                           bg.scale.set(6, 6);
-		                           // bg.setGraphicSize(Std.int(bg.width * 6));
-		                           // bg.updateHitbox();
-		                           add(bg);
-
-		                           var fg:FlxSprite = new FlxSprite(posX, posY).loadGraphic(Paths.image('weeb/evilSchoolFG'));
-		                           fg.scale.set(6, 6);
-		                           // fg.setGraphicSize(Std.int(fg.width * 6));
-		                           // fg.updateHitbox();
-		                           add(fg);
-
-		                           wiggleShit.effectType = WiggleEffectType.DREAMY;
-		                           wiggleShit.waveAmplitude = 0.01;
-		                           wiggleShit.waveFrequency = 60;
-		                           wiggleShit.waveSpeed = 0.8;
-		                    */
-
-		                  // bg.shader = wiggleShit.shader;
-		                  // fg.shader = wiggleShit.shader;
-
-		                  /* 
-		                            var waveSprite = new FlxEffectSprite(bg, [waveEffectBG]);
-		                            var waveSpriteFG = new FlxEffectSprite(fg, [waveEffectFG]);
-
-		                            // Using scale since setGraphicSize() doesnt work???
-		                            waveSprite.scale.set(6, 6);
-		                            waveSpriteFG.scale.set(6, 6);
-		                            waveSprite.setPosition(posX, posY);
-		                            waveSpriteFG.setPosition(posX, posY);
-
-		                            waveSprite.scrollFactor.set(0.7, 0.8);
-		                            waveSpriteFG.scrollFactor.set(0.9, 0.8);
-
-		                            // waveSprite.setGraphicSize(Std.int(waveSprite.width * 6));
-		                            // waveSprite.updateHitbox();
-		                            // waveSpriteFG.setGraphicSize(Std.int(fg.width * 6));
-		                            // waveSpriteFG.updateHitbox();
-
-		                            add(waveSprite);
-		                            add(waveSpriteFG);
-		                    */
 		          }
-		          default:
-		          {
-		                  defaultCamZoom = 0.9;
-		                  curStage = 'stage';
-		                  var bg:FlxSprite = new FlxSprite(-600, -200).loadGraphic(Paths.image('stageback'));
-		                  bg.antialiasing = true;
-		                  bg.scrollFactor.set(0.9, 0.9);
-		                  bg.active = false;
-		                  add(bg);
+		        default:
+		        {
+					//if()
+					curStage = "Stage";
+					//lazy rn LOL, will do later
+		        }
+            }
 
-		                  var stageFront:FlxSprite = new FlxSprite(-650, 600).loadGraphic(Paths.image('stagefront'));
-		                  stageFront.setGraphicSize(Std.int(stageFront.width * 1.1));
-		                  stageFront.updateHitbox();
-		                  stageFront.antialiasing = true;
-		                  stageFront.scrollFactor.set(0.9, 0.9);
-		                  stageFront.active = false;
-		                  add(stageFront);
+		if(curStage == "Stage"){
+			defaultCamZoom = 0.9;
+		    var bg:FlxSprite = new FlxSprite(-600, -200).loadGraphic(Paths.image('stageback'));
+		    bg.antialiasing = true;
+		    bg.scrollFactor.set(0.9, 0.9);
+		    bg.active = false;
+		    add(bg);
 
-		                  var stageCurtains:FlxSprite = new FlxSprite(-500, -300).loadGraphic(Paths.image('stagecurtains'));
-		                  stageCurtains.setGraphicSize(Std.int(stageCurtains.width * 0.9));
-		                  stageCurtains.updateHitbox();
-		                  stageCurtains.antialiasing = true;
-		                  stageCurtains.scrollFactor.set(1.3, 1.3);
-		                  stageCurtains.active = false;
+		    var stageFront:FlxSprite = new FlxSprite(-650, 600).loadGraphic(Paths.image('stagefront'));
+		    stageFront.setGraphicSize(Std.int(stageFront.width * 1.1));
+		    stageFront.updateHitbox();
+		    stageFront.antialiasing = true;
+		    stageFront.scrollFactor.set(0.9, 0.9);
+		    stageFront.active = false;
+		    add(stageFront);
 
-		                  add(stageCurtains);
-		          }
-              }
-
+		    var stageCurtains:FlxSprite = new FlxSprite(-500, -300).loadGraphic(Paths.image('stagecurtains'));
+		    stageCurtains.setGraphicSize(Std.int(stageCurtains.width * 0.9));
+		    stageCurtains.updateHitbox();
+		    stageCurtains.antialiasing = true;
+		    stageCurtains.scrollFactor.set(1.3, 1.3);
+		    stageCurtains.active = false;
+			add(stageCurtains);
+		}
 		var gfVersion:String = 'gf';
 
 		switch (curStage)
@@ -922,7 +889,7 @@ class PlayState extends MusicBeatState
 		{
 			dad.dance();
 			gf.dance();
-			boyfriend.playAnim('idle');
+			boyfriend.dance();
 
 			var introAssets:Map<String, Array<String>> = new Map<String, Array<String>>();
 			introAssets.set('default', ['ready', "set", "go"]);
