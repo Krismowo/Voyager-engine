@@ -44,26 +44,12 @@ class Song
 	public static function loadFromJson(jsonInput:String, ?folder:String, ?mods:Bool = false, ?modfolder:String = ''):SwagSong
 	{
 		var startFolder = mods ? "mods" : "assets";
+		if(startFolder == 'assets'){
+			modfolder = "/" + modfolder + "/";
+		}
 		var rawJson = Assets.getText(startFolder + modfolder + "/data/" + folder.toLowerCase() + '/' + jsonInput.toLowerCase() + ".json").trim();
-		/*dumb explination here, first we have the game check through all da folders within the mods 
-		folder then if it has the json we are looking for we break outta the loop with da json,
-		if not it will end up with a normal game json from da files*/
 		var modjson:Bool = false;
-		/*
-		for(i in sys.FileSystem.readDirectory("mods/") ){
-			trace("mods/" + i + "/data/" + folder.toLowerCase() + "/" + jsonInput.toLowerCase() + ".json" + " " + Assets.exists("mods/" + i + "/data/" + folder.toLowerCase() + "/" + jsonInput.toLowerCase() + ".json"));
-			if(Assets.exists("mods/" + i + "/data/" + folder.toLowerCase() + "/" + jsonInput.toLowerCase() + ".json")){
-				rawJson = Assets.getText("mods/" + i + "/data/" + folder.toLowerCase() + "/" + jsonInput.toLowerCase() + ".json").trim();
-				modjson = true;
-				break;
-			}else if(!modjson){
-				if(Assets.exists("assets/data/" + folder.toLowerCase() + '/' + jsonInput.toLowerCase() + ".json"))
-					rawJson = Assets.getText("assets/data/" + folder.toLowerCase() + '/' + jsonInput.toLowerCase() + ".json").trim();
-			}else{
-				trace("bitch");
-			}
-		}*/
-		//if(Assets.exists("mods/"))
+		
 		while (!rawJson.endsWith("}"))
 		{
 			rawJson = rawJson.substr(0, rawJson.length - 1);
