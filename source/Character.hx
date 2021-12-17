@@ -4,6 +4,9 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.animation.FlxBaseAnimation;
 import flixel.graphics.frames.FlxAtlasFrames;
+import openfl.utils.Assets;
+import sys.FileSystem;
+import sys.io.File;
 
 using StringTools;
 
@@ -16,6 +19,8 @@ class Character extends FlxSprite
 	public var curCharacter:String = 'bf';
 
 	public var holdTimer:Float = 0;
+	public var HscriptCharacter:HscriptUtilities = new HscriptUtilities();
+	public var isModChar:Bool = false;
 
 	public function new(x:Float, y:Float, ?character:String = "bf", ?isPlayer:Bool = false)
 	{
@@ -27,6 +32,21 @@ class Character extends FlxSprite
 
 		var tex:FlxAtlasFrames;
 		antialiasing = true;
+
+		trace(curCharacter);
+		
+		trace(PlayState.curmodfolder);
+		var daPath = 'mods/' + PlayState.curmodfolder + '/characters/' + curCharacter + '.hx';
+		if (FileSystem.exists(daPath))
+		{
+			trace('isModChar');
+			var script = File.getContent(daPath);
+			HscriptCharacter.init(this);
+			HscriptCharacter.execute(script);
+			HscriptCharacter.RunFunct("init");
+			isModChar = true;
+			return;
+		}
 
 		switch (curCharacter)
 		{
@@ -524,6 +544,13 @@ class Character extends FlxSprite
 
 	override function update(elapsed:Float)
 	{
+		if (isModChar && HscriptCharacter.FunctExists('update'))
+		{
+			HscriptCharacter.RunFunct('update');
+			super.update(elapsed);
+			return;
+		}
+
 		if (!curCharacter.startsWith('bf'))
 		{
 			if (animation.curAnim.name.startsWith('sing'))
@@ -554,67 +581,24 @@ class Character extends FlxSprite
 
 	private var danced:Bool = false;
 
-	/**
-	 * FOR GF DANCING SHIT
-	 */
-	public function dance()
+	public function dance(?forced:Bool = false, ?alt:Bool = false)
 	{
 		if (!debugMode)
 		{
-			switch (curCharacter)
+			if (isModChar && HscriptCharacter.FunctExists('dance'))
 			{
-				case 'gf':
-					if (!animation.curAnim.name.startsWith('hair'))
-					{
-						danced = !danced;
+				HscriptCharacter.RunFunct('dance');
+				return;
+			}
 
-						if (danced)
-							playAnim('danceRight');
-						else
-							playAnim('danceLeft');
-					}
-
-				case 'gf-christmas':
-					if (!animation.curAnim.name.startsWith('hair'))
-					{
-						danced = !danced;
-
-						if (danced)
-							playAnim('danceRight');
-						else
-							playAnim('danceLeft');
-					}
-
-				case 'gf-car':
-					if (!animation.curAnim.name.startsWith('hair'))
-					{
-						danced = !danced;
-
-						if (danced)
-							playAnim('danceRight');
-						else
-							playAnim('danceLeft');
-					}
-				case 'gf-pixel':
-					if (!animation.curAnim.name.startsWith('hair'))
-					{
-						danced = !danced;
-
-						if (danced)
-							playAnim('danceRight');
-						else
-							playAnim('danceLeft');
-					}
-
-				case 'spooky':
-					danced = !danced;
-
-					if (danced)
-						playAnim('danceRight');
-					else
-						playAnim('danceLeft');
-				default:
-					playAnim('idle');
+			var postfix:String = (alt ? '-alt' : ''); //I have no idea if we need alt mechanic here but whatever lmao
+			if (animation.getByName('idle' + postfix) != null)
+			{
+				playAnim('idle' + postfix);
+			}
+			else if (animation.getByName('danceRight') != null)
+			{
+				gfDance();
 			}
 		}
 	}
@@ -645,5 +629,18 @@ class Character extends FlxSprite
 	public function addOffset(name:String, x:Float = 0, y:Float = 0)
 	{
 		animOffsets[name] = [x, y];
+	}
+
+	function gfDance():Void
+	{
+		if (!animation.curAnim.name.startsWith('hair') && animation.curAnim.finished)
+		{
+			danced = !danced;
+
+			if (danced)
+				playAnim('danceRight');
+			else
+				playAnim('danceLeft');
+		}
 	}
 }

@@ -6,15 +6,16 @@ import hscript.Parser;
 class HscriptUtilities{
     public var interp:Interp;
     public var parser:Parser;
-    public function init(Play:FlxState){ //haha im doing stuff that things like psych engine cant cus lua sucks and his lua things code is unreadable (the engine is still good i just hate how some things arent that readable LOL)
+    public function new(){};
+    public function init(self:Dynamic){ //haha im doing stuff that things like psych engine cant cus lua sucks and his lua things code is unreadable (the engine is still good i just hate how some things arent that readable LOL)
         interp = new Interp();
         parser = new Parser();
-        set("PlayState", Play);
+        set('self', self);
         set("SONG", PlayState.SONG);
         set("isStoryMode", PlayState.isStoryMode);
         set("curStage", PlayState.curStage);
         set("FlxSprite", FlxSprite);
-        set("add", Play.add);
+        set("add", self.add);
         set("Paths", Paths);
     }
     public function execute(code:String){
@@ -28,6 +29,13 @@ class HscriptUtilities{
         if(func != null){
             func();
         }
+    }
+    public function FunctExists(Function:String):Bool{
+        var func = interp.variables.get(Function);
+        if (func != null){
+            return true;
+        }
+        return false;
     }
     //funny stuff will be added later lols
 }
