@@ -44,7 +44,7 @@ class Song
 	public static function loadFromJson(jsonInput:String, ?folder:String, ?mods:Bool = false, ?modfolder:String = ''):SwagSong
 	{
 		var startFolder = mods ? "mods" : "assets";
-		if(startFolder == 'assets'){
+		if(startFolder == 'mods'){
 			modfolder = "/" + modfolder + "/";
 		}
 		var rawJson = Assets.getText(startFolder + modfolder + "/data/" + folder.toLowerCase() + '/' + jsonInput.toLowerCase() + ".json").trim();
