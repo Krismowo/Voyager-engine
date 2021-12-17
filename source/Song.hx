@@ -45,7 +45,11 @@ class Song
 	{
 		var startFolder = mods ? "mods" : "assets";
 		if(startFolder == 'mods'){
-			modfolder = "/" + modfolder + "/";
+			PlayState.curmodfolder = modfolder;
+			modfolder = "/" + modfolder;
+			PlayState.modsongs = true;
+		}else{
+			PlayState.modsongs = false;
 		}
 		var rawJson = Assets.getText(startFolder + modfolder + "/data/" + folder.toLowerCase() + '/' + jsonInput.toLowerCase() + ".json").trim();
 		var modjson:Bool = false;

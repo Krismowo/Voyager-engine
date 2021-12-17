@@ -79,7 +79,9 @@ class FreeplayState extends MusicBeatState
 
 		if (StoryMenuState.weekUnlocked[6] || isDebug)
 			addWeek(['Senpai', 'Roses', 'Thorns'], 6, ['senpai', 'senpai', 'spirit']);
-
+		for(song in 0...Mods.Songs.length){
+			addWeek(Mods.Songs[song].SongNames,song + 6,Mods.Songs[song].Icons, true,Mods.Songs[song].modDirectory);
+		}
 		// LOAD MUSIC
 
 		// LOAD CHARACTERS
@@ -157,14 +159,14 @@ class FreeplayState extends MusicBeatState
 		super.create();
 	}
 
-	public function addSong(songName:String, weekNum:Int, songCharacter:String)
+	public function addSong(songName:String, weekNum:Int, songCharacter:String, ?ismod:Bool = false, ?modfolder:String = '')
 	{
-		songs.push(new SongMetadata(songName, weekNum, songCharacter));
+		songs.push(new SongMetadata(songName, weekNum, songCharacter, ismod, modfolder));
 		if(FlxG.save.data.cache)
 			FlxG.sound.cache(Paths.inst(songName));
 	}
 
-	public function addWeek(songs:Array<String>, weekNum:Int, ?songCharacters:Array<String>)
+	public function addWeek(songs:Array<String>, weekNum:Int, ?songCharacters:Array<String>,?ismod:Bool = false,?modfolder:String = '')
 	{
 		if (songCharacters == null)
 			songCharacters = ['bf'];
@@ -172,7 +174,7 @@ class FreeplayState extends MusicBeatState
 		var num:Int = 0;
 		for (song in songs)
 		{
-			addSong(song, weekNum, songCharacters[num]);
+			addSong(song, weekNum, songCharacters[num],ismod,modfolder);
 
 			if (songCharacters.length != 1)
 				num++;
@@ -224,7 +226,7 @@ class FreeplayState extends MusicBeatState
 
 			trace(poop);
 
-			PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
+			PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase(), songs[curSelected].ismod, songs[curSelected].modfolder);
 			PlayState.isStoryMode = false;
 			PlayState.storyDifficulty = curDifficulty;
 
@@ -279,7 +281,10 @@ class FreeplayState extends MusicBeatState
 		#end
 
 		#if PRELOAD_ALL
-		FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
+		if(!songs[curSelected].ismod)
+			FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
+		else
+			FlxG.sound.playMusic(Sound.fromFile("mods/" + songs[curSelected].modfolder + "/songs/" + songs[curSelected].songName + "/Inst.ogg"));
 		#end
 
 		var bullShit:Int = 0;
@@ -313,9 +318,12 @@ class SongMetadata
 	public var songName:String = "";
 	public var week:Int = 0;
 	public var songCharacter:String = "";
-
-	public function new(song:String, week:Int, songCharacter:String)
+	public var ismod:Bool;
+	public var modfolder:String = "";
+	public function new(song:String, week:Int, songCharacter:String, ?ismod:Bool = false, ?modfolder:String = "")
 	{
+		this.modfolder = modfolder;
+		this.ismod = ismod;
 		this.songName = song;
 		this.week = week;
 		this.songCharacter = songCharacter;

@@ -5,10 +5,12 @@ import lime.utils.Assets;
 typedef ModJson = {
     var Songs:Array<String>;
     var OverrideSplash:Bool;
+    var Icons:Array<String>;
 }
 typedef SongStuff = {
-    var SongName:String;
+    var SongNames:Array<String>;
     var modDirectory:String;
+    var Icons:Array<String>;
 }
 class Mods{
     public static var Songs:Array<SongStuff> = [];
@@ -17,15 +19,14 @@ class Mods{
             trace("mods/" + file);
             if(Assets.exists("mods/" + file + "/pack.json")){
                 var json:ModJson = Json.parse(Assets.getText("mods/" + file + "/pack.json"));
-                for(song in 0...json.Songs.length){
-                    var songshit:SongStuff = {
-                        SongName: json.Songs[song],
-                        modDirectory: file
-                    };
-                    Songs.push(songshit);
-
+            
+                var songshit:SongStuff = {
+                    SongNames: json.Songs,
+                    modDirectory: file,
+                    Icons: json.Icons
+                };
+                Songs.push(songshit);
                 }
             }
-        }
-    }   
-}
+    }
+}   

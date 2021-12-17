@@ -1,5 +1,6 @@
 package;
 
+import openfl.media.Sound;
 #if desktop
 import Discord.DiscordClient;
 #end
@@ -54,6 +55,7 @@ class PlayState extends MusicBeatState
 	public static var storyPlaylist:Array<String> = [];
 	public static var storyDifficulty:Int = 1;
 	public static var modsongs:Bool = false;
+	public static var curmodfolder:String = "";
 
 	var halloweenLevel:Bool = false;
 
@@ -987,7 +989,10 @@ class PlayState extends MusicBeatState
 		lastReportedPlayheadPosition = 0;
 
 		if (!paused)
-			FlxG.sound.playMusic(Paths.inst(PlayState.SONG.song), 1, false);
+			if(!modsongs)
+				FlxG.sound.playMusic(Paths.inst(PlayState.SONG.song), 1, false);
+			else 
+				FlxG.sound.playMusic(Sound.fromFile("mods/" + curmodfolder + "/songs/" + PlayState.SONG.song.toLowerCase() + "/Inst.ogg"), 1, false);
 		FlxG.sound.music.onComplete = endSong;
 		vocals.play();
 
@@ -1012,7 +1017,10 @@ class PlayState extends MusicBeatState
 		curSong = songData.song;
 
 		if (SONG.needsVoices)
-			vocals = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song));
+			if(!modsongs)
+				vocals = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song));
+			else 
+				vocals = new FlxSound().loadEmbedded(Sound.fromFile("mods/" + curmodfolder + "/songs/" + PlayState.SONG.song + "/Voices.ogg"));
 		else
 			vocals = new FlxSound();
 
