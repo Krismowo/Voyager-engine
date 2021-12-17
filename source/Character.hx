@@ -546,6 +546,7 @@ class Character extends FlxSprite
 	{
 		if (isModChar && HscriptCharacter.FunctExists('update'))
 		{
+			HscriptCharacter.set('elapsed', elapsed);
 			HscriptCharacter.RunFunct('update');
 			super.update(elapsed);
 			return;
@@ -594,7 +595,7 @@ class Character extends FlxSprite
 			var postfix:String = (alt ? '-alt' : ''); //I have no idea if we need alt mechanic here but whatever lmao
 			if (animation.getByName('idle' + postfix) != null)
 			{
-				playAnim('idle' + postfix);
+				playAnim('idle' + postfix, forced);
 			}
 			else if (animation.getByName('danceRight') != null)
 			{
@@ -633,7 +634,7 @@ class Character extends FlxSprite
 
 	function gfDance():Void
 	{
-		if (!animation.curAnim.name.startsWith('hair') && animation.curAnim.finished)
+		if (!animation.curAnim.name.startsWith('hair'))
 		{
 			danced = !danced;
 

@@ -17,6 +17,7 @@ class HscriptUtilities{
         set("FlxSprite", FlxSprite);
         set("add", self.add);
         set("Paths", Paths);
+        set('Math', Math);
     }
     public function execute(code:String){
         interp.execute( parser.parseString(code, ".hx") );
