@@ -1,4 +1,4 @@
 {
-    "overridesplashtexts": false,
-    "songs":[] 
+    "OverrideSplash": false,
+    "Songs":["Roses"] 
 }

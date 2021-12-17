@@ -45,6 +45,7 @@ class TitleState extends MusicBeatState
 
 	override public function create():Void
 	{
+		Mods.init();
 		if(FlxG.save.data.cache == null){
 			FlxG.save.data.cache = false; //fuck you caching
 		}
