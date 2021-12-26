@@ -1,5 +1,6 @@
 package;
 
+import sys.io.File;
 import haxe.io.Path;
 import Section.SwagSection;
 import haxe.Json;
@@ -51,7 +52,7 @@ class Song
 		}else{
 			PlayState.modsongs = false;
 		}
-		var rawJson = Assets.getText(startFolder + modfolder + "/data/" + folder.toLowerCase() + '/' + jsonInput.toLowerCase() + ".json").trim();
+		var rawJson = File.getContent(startFolder + modfolder + "/data/" + folder.toLowerCase() + '/' + jsonInput.toLowerCase() + ".json").trim();
 		var modjson:Bool = false;
 		
 		while (!rawJson.endsWith("}"))

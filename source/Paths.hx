@@ -1,5 +1,8 @@
 package;
 
+import openfl.display.BitmapData;
+import openfl.display.Bitmap;
+import openfl.utils.Assets;
 import sys.io.File;
 import flixel.FlxG;
 import flixel.graphics.frames.FlxAtlasFrames;
@@ -105,9 +108,19 @@ class Paths
 	{
 		return 'songs:assets/songs/${song.toLowerCase()}/Inst.$SOUND_EXT';
 	}
-
-	inline static public function image(key:String, ?library:String)
+	inline static public function coolimage(key:String){
+		if(FileSystem.exists(key)){
+			var bitmap = Assets.getBitmapData(key, false);
+			var flxthing:FlxGraphic = FlxGraphic.fromBitmapData(bitmap);
+			return flxthing;
+		}
+		return null;
+	}
+	inline static public function image(key:String, ?library:String):Dynamic
 	{
+		var imageToReturn:FlxGraphic = coolimage(key);
+		if(imageToReturn != null)
+			return imageToReturn;
 		return getPath('images/$key.png', IMAGE, library);
 	}
 
@@ -126,10 +139,15 @@ class Paths
 		return FlxAtlasFrames.fromSpriteSheetPacker(image(key, library), file('images/$key.txt', library));
 	}
 
-	inline static public function getModSparrow(key:String){ //this is done like this cus fucking dumbass origonal thing used smth that unhardcoding cannot LOL
-		var Source:String = key;
-		var Description:String = key;
-		var graphic:FlxGraphic = FlxG.bitmap.add(Source);
+	inline static public function LoadImage(Key:String){
+		var bitmap:BitmapData = BitmapData.fromFile(Key);
+		return FlxGraphic.fromBitmapData(bitmap);
+	}
+	inline static public function getModSparrow(key:String){ //i swear there are small differences in this from the "fromSparrow" thing in flxatlasframes 
+		var Source:String = key + ".png";
+		var Description:String = key + ".xml";
+		
+		var graphic:FlxGraphic = FlxG.bitmap.add(LoadImage(Source));
 		if (graphic == null)
 			return null;
 
@@ -144,7 +162,7 @@ class Paths
 		frames = new FlxAtlasFrames(graphic);
 
 		if (FileSystem.exists(Description))
-			Description = File.getContent(Description);
+			Description = OpenFlAssets.getText(Description);
 
 		var data:Access = new Access(Xml.parse(Description).firstElement());
 

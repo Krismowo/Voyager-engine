@@ -1,5 +1,6 @@
 {
     "OverrideSplash": false,
     "Songs":["funny"],
-    "Icons":["dad"] 
+    "Icons":["dad"],
+    "Stages":[]
 }

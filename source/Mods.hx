@@ -1,11 +1,12 @@
 package;
+import sys.io.File;
 import haxe.Json;
 import sys.FileSystem;
-import lime.utils.Assets;
 typedef ModJson = {
     var Songs:Array<String>;
-    var OverrideSplash:Bool;
+    var AddsSplashes:Bool;
     var Icons:Array<String>;
+    var Stages:Array<String>;
 }
 typedef SongStuff = {
     var SongNames:Array<String>;
@@ -14,11 +15,12 @@ typedef SongStuff = {
 }
 class Mods{
     public static var Songs:Array<SongStuff> = [];
+    public static var Splashes:Array<Array<String>> = [];
     public static function init(){
         for(file in FileSystem.readDirectory("mods/")){
             trace("mods/" + file);
-            if(Assets.exists("mods/" + file + "/pack.json")){
-                var json:ModJson = Json.parse(Assets.getText("mods/" + file + "/pack.json"));
+            if(FileSystem.exists("mods/" + file + "/pack.json")){
+                var json:ModJson = Json.parse(File.getContent("mods/" + file + "/pack.json"));
             
                 var songshit:SongStuff = {
                     SongNames: json.Songs,
@@ -26,7 +28,13 @@ class Mods{
                     Icons: json.Icons
                 };
                 Songs.push(songshit);
+                if(json.AddsSplashes){
+                    var splashes = File.getContent("mods/" + file + "/Splashes.txt").split("\n");
+                    for(i in splashes){
+                        Splashes.push(i.split("--"));
+                    }
                 }
             }
+        }
     }
 }   

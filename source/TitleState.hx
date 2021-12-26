@@ -218,6 +218,12 @@ class TitleState extends MusicBeatState
 		{
 			swagGoodArray.push(i.split('--'));
 		}
+		if(Mods.Splashes != null && Mods.Splashes != []){
+			for(i in Mods.Splashes){
+				swagGoodArray.push(i);
+			}
+			trace(swagGoodArray);
+		}
 
 		return swagGoodArray;
 	}
