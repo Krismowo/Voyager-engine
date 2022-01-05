@@ -31,6 +31,8 @@ import openfl.events.IOErrorEvent;
 import openfl.media.Sound;
 import openfl.net.FileReference;
 import openfl.utils.ByteArray;
+import sys.io.File;
+import sys.FileSystem;
 
 using StringTools;
 
@@ -225,6 +227,10 @@ class ChartingState extends MusicBeatState
 		stepperBPM.name = 'song_bpm';
 
 		var characters:Array<String> = CoolUtil.coolTextFile(Paths.txt('characterList'));
+		var bonusChars:Bool = FileSystem.exists('mods/' + PlayState.curmodfolder + '/data/characterList.txt');
+		if (bonusChars)
+			for (v in CoolUtil.coolTextFile('mods/' + PlayState.curmodfolder + '/data/characterList.txt', true))
+				characters.push(v);
 
 		var player1DropDown = new FlxUIDropDownMenu(10, 100, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{

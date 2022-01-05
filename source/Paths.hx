@@ -162,7 +162,7 @@ class Paths
 		frames = new FlxAtlasFrames(graphic);
 
 		if (FileSystem.exists(Description))
-			Description = OpenFlAssets.getText(Description);
+			Description = File.getContent(Description);
 
 		var data:Access = new Access(Xml.parse(Description).firstElement());
 

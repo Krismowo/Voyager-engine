@@ -1,6 +1,7 @@
 package;
 
 import lime.utils.Assets;
+import sys.io.File;
 
 using StringTools;
 
@@ -13,9 +14,13 @@ class CoolUtil
 		return difficultyArray[PlayState.storyDifficulty];
 	}
 
-	public static function coolTextFile(path:String):Array<String>
+	public static function coolTextFile(path:String, mod:Bool = false):Array<String>
 	{
-		var daList:Array<String> = Assets.getText(path).trim().split('\n');
+		var daList:Array<String>;
+		if (mod)
+			daList = File.getContent(path).trim().split('\n');
+		else
+			daList = Assets.getText(path).trim().split('\n');
 
 		for (i in 0...daList.length)
 		{

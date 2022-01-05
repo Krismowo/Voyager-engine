@@ -1270,7 +1270,7 @@ class PlayState extends MusicBeatState
 
 	override public function update(elapsed:Float)
 	{
-		if(!paused)
+		if(!paused && HscriptStage != null)
 			CallOnScripts("update");
 		#if !debug
 		perfectMode = false;
@@ -2274,7 +2274,7 @@ class PlayState extends MusicBeatState
 	override function stepHit()
 	{
 		super.stepHit();
-		if(!paused)
+		if(!paused && HscriptStage != null)
 			CallOnScripts("stepHit");
 		if (FlxG.sound.music.time > Conductor.songPosition + 20 || FlxG.sound.music.time < Conductor.songPosition - 20)
 		{
@@ -2293,7 +2293,7 @@ class PlayState extends MusicBeatState
 	override function beatHit()
 	{
 		super.beatHit();
-		if(!paused)
+		if(!paused && HscriptStage != null)
 			CallOnScripts("beatHit");
 
 		if (generatedMusic)
