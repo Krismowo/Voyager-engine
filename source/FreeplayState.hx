@@ -99,7 +99,7 @@ class FreeplayState extends MusicBeatState
 			songText.targetY = i;
 			grpSongs.add(songText);
 
-			var icon:HealthIcon = new HealthIcon(songs[i].songCharacter);
+			var icon:HealthIcon = new HealthIcon(songs[i].songCharacter, false, songs[i].modfolder);
 			icon.sprTracker = songText;
 
 			// using a FlxGroup is too much fuss!
@@ -168,7 +168,6 @@ class FreeplayState extends MusicBeatState
 
 	public function addWeek(songs:Array<String>, weekNum:Int, ?songCharacters:Array<String>,?ismod:Bool = false,?modfolder:String = '')
 	{
-		PlayState.curmodfolder = modfolder;
 		if (songCharacters == null)
 			songCharacters = ['bf'];
 
