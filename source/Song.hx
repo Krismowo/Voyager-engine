@@ -6,6 +6,7 @@ import Section.SwagSection;
 import haxe.Json;
 import haxe.format.JsonParser;
 import lime.utils.Assets;
+import sys.FileSystem;
 
 using StringTools;
 
@@ -22,6 +23,14 @@ typedef SwagSong =
 	var gfVersion:String;
 	var validScore:Bool;
 	var stage:String;
+	var difficulty:String;
+}
+
+typedef SongData =
+{
+	var isModSong:Bool;
+	var Directory:String;
+	var SongName:String;
 }
 
 class Song
@@ -36,6 +45,7 @@ class Song
 	public var player2:String = 'dad';
 	public var gfVersion:String = 'gf';
 	public var stage:String = "stage";
+	public var difficulty = '';
 
 	public function new(song, notes, bpm)
 	{
@@ -44,17 +54,38 @@ class Song
 		this.bpm = bpm;
 	}
 
-	public static function loadFromJson(jsonInput:String, ?folder:String, ?mods:Bool = false, ?modfolder:String = ''):SwagSong
+	public static function getSongData(daSong:String):SongData
 	{
-		var startFolder = mods ? "mods" : "assets";
+		var balls:SongData = {
+			isModSong: false,
+			Directory: '',
+			SongName: daSong
+		}
+		for (i in Mods.Songs){
+			for (j in i.SongNames)
+				if (daSong == j && FileSystem.exists("mods/" + i.modDirectory + "/songs/" + j + "/Inst.ogg"))
+				{
+					balls.isModSong = true;
+					balls.Directory = i.modDirectory;
+					return balls;
+				}
+		}
+		return balls;
+	}
+
+	public static function loadFromJson(jsonInput:String, ?songName:String):SwagSong
+	{
+		var modSong:SongData = getSongData(songName);
+		var modfolder:String = '';
+		var startFolder:String = modSong.isModSong ? "mods" : "assets";
 		if(startFolder == 'mods'){
-			PlayState.curmodfolder = modfolder;
-			modfolder = "/" + modfolder;
+			PlayState.curmodfolder = modSong.Directory;
+			modfolder = "/" + modSong.Directory;
 			PlayState.modsongs = true;
 		}else{
 			PlayState.modsongs = false;
 		}
-		var rawJson = File.getContent(startFolder + modfolder + "/data/" + folder.toLowerCase() + '/' + jsonInput.toLowerCase() + ".json").trim();
+		var rawJson = File.getContent(startFolder + modfolder + "/data/" + songName.toLowerCase() + '/' + jsonInput.toLowerCase() + ".json").trim();
 		var modjson:Bool = false;
 		
 		while (!rawJson.endsWith("}"))

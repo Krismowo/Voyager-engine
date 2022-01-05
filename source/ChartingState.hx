@@ -124,7 +124,8 @@ class ChartingState extends MusicBeatState
 				gfVersion: 'gf',
 				speed: 1,
 				stage: "Stage",
-				validScore: false
+				validScore: false,
+				difficulty: ''
 			};
 		}
 
@@ -202,7 +203,7 @@ class ChartingState extends MusicBeatState
 			FlxG.sound.music.volume = vol;
 		};
 
-		var saveButton:FlxButton = new FlxButton(110, 8, "Save", function()
+		var saveButton:FlxButton = new FlxButton(110, 250, "Save", function()
 		{
 			saveLevel();
 		});
@@ -239,6 +240,10 @@ class ChartingState extends MusicBeatState
 		for (v in Mods.GfVersions)
 			gfVersions.push(v);
 
+		var difficulties:Array<String> = ['easy', 'normal', 'hard'];
+		for (i in Mods.CustomDifficulties)
+			difficulties.push(i);
+
 		var player1DropDown = new FlxUIDropDownMenu(10, 100, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{
 			_song.player1 = characters[Std.parseInt(character)];
@@ -252,7 +257,7 @@ class ChartingState extends MusicBeatState
 
 		player2DropDown.selectedLabel = _song.player2;
 
-		var stageDropDown = new FlxUIDropDownMenu(10, 300, FlxUIDropDownMenu.makeStrIdLabelArray(stages, true), function(stage:String)
+		var stageDropDown = new FlxUIDropDownMenu(10, 150, FlxUIDropDownMenu.makeStrIdLabelArray(stages, true), function(stage:String)
 		{
 			_song.stage = stages[Std.parseInt(stage)];
 		});
@@ -266,6 +271,13 @@ class ChartingState extends MusicBeatState
 
 		gfDropDown.selectedLabel = _song.gfVersion;
 
+		difficultyDropDown = new FlxUIDropDownMenu(90, 8, FlxUIDropDownMenu.makeStrIdLabelArray(difficulties, true), function(difficulty:String)
+			{
+				_song.difficulty = difficulties[Std.parseInt(difficulty)].replace('normal', '');
+			});
+
+		difficultyDropDown.selectedLabel = _song.difficulty;
+
 		var tab_group_song = new FlxUI(null, UI_box);
 		tab_group_song.name = "Song";
 		tab_group_song.add(UI_songTitle);
@@ -278,10 +290,11 @@ class ChartingState extends MusicBeatState
 		tab_group_song.add(loadAutosaveBtn);
 		tab_group_song.add(stepperBPM);
 		tab_group_song.add(stepperSpeed);
-		tab_group_song.add(player1DropDown);
-		tab_group_song.add(player2DropDown);
 		tab_group_song.add(stageDropDown);
 		tab_group_song.add(gfDropDown);
+		tab_group_song.add(player1DropDown);
+		tab_group_song.add(player2DropDown);
+		tab_group_song.add(difficultyDropDown);
 
 		UI_box.addGroup(tab_group_song);
 		UI_box.scrollFactor.set();
@@ -294,6 +307,7 @@ class ChartingState extends MusicBeatState
 	var check_changeBPM:FlxUICheckBox;
 	var stepperSectionBPM:FlxUINumericStepper;
 	var check_altAnim:FlxUICheckBox;
+	var difficultyDropDown:FlxUIDropDownMenu;
 
 	function addSectionUI():Void
 	{
@@ -379,17 +393,10 @@ class ChartingState extends MusicBeatState
 			// vocals.stop();
 		}
 
-		var modPath:String = null;
-		for (i in Mods.Songs){
-			for (j in i.SongNames)
-				if (_song.song == j && FileSystem.exists("mods/" + i.modDirectory + "/songs/" + j + "/Inst.ogg"))
-				{
-					modPath = "mods/" + i.modDirectory + "/songs/" + j;
-					break;
-				}
-		}
+		var songData = Song.getSongData(daSong);
+		var modPath:String = (songData.isModSong ? "mods/" + songData.Directory + "/songs/" + daSong : '');
 
-		if (modPath != null)
+		if (modPath != '')
 		{
 			FlxG.sound.playMusic(Sound.fromFile(modPath + '/Inst.ogg'));
 			if (_song.needsVoices && FileSystem.exists(modPath + '/Voices.ogg'))
@@ -1068,7 +1075,7 @@ class ChartingState extends MusicBeatState
 
 	function loadJson(song:String):Void
 	{
-		PlayState.SONG = Song.loadFromJson(song.toLowerCase(), song.toLowerCase());
+		PlayState.SONG = Song.loadFromJson((difficultyDropDown.selectedLabel != 'normal' ? song.toLowerCase() + '-' + difficultyDropDown.selectedLabel : song.toLowerCase()), song.toLowerCase());
 		FlxG.resetState();
 	}
 

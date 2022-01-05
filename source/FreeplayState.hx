@@ -13,6 +13,7 @@ import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
+import sys.FileSystem;
 
 using StringTools;
 
@@ -226,7 +227,7 @@ class FreeplayState extends MusicBeatState
 
 			trace(poop);
 
-			PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase(), songs[curSelected].ismod, songs[curSelected].modfolder);
+			PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
 			PlayState.isStoryMode = false;
 			PlayState.storyDifficulty = curDifficulty;
 
@@ -239,30 +240,38 @@ class FreeplayState extends MusicBeatState
 	function changeDiff(change:Int = 0)
 	{
 		curDifficulty += change;
+		var diffs = ['easy', 'normal', 'hard'];
+		var folder = FileSystem.readDirectory((songs[curSelected].ismod ? 'mods/' + songs[curSelected].modfolder + '/data/' + songs[curSelected].songName.toLowerCase() : 'assets/data/' + songs[curSelected].songName.toLowerCase()));
+		if (!folder.contains(songs[curSelected].songName.toLowerCase() + '.json')) // remove normal if it doesn't exist
+			diffs.remove('normal');
 
+		for (i in diffs) 
+			if (!folder.contains(songs[curSelected].songName.toLowerCase() + '-' + i + '.json') && i != 'normal') // remove easy/hard if it doesn't exist
+				diffs.remove(i);
+
+		for (file in folder) // Add custom difficulties
+		{
+			file = file.replace('.json', '');
+			if (file.startsWith(songs[curSelected].songName.toLowerCase() + '-') && !diffs.contains(file.replace(songs[curSelected].songName.toLowerCase() + '-', '')))
+				diffs.push(file.replace(songs[curSelected].songName.toLowerCase() + '-', ''));
+		}
+		trace(diffs);
+		trace(diffs.length);
 		if (curDifficulty < 0)
-			curDifficulty = 2;
-		if (curDifficulty > 2)
+			curDifficulty = diffs.length - 1;
+		if (curDifficulty > diffs.length - 1)
 			curDifficulty = 0;
+		trace(curDifficulty);
 
 		#if !switch
 		intendedScore = Highscore.getScore(songs[curSelected].songName, curDifficulty);
 		#end
-
-		switch (curDifficulty)
-		{
-			case 0:
-				diffText.text = "EASY";
-			case 1:
-				diffText.text = 'NORMAL';
-			case 2:
-				diffText.text = "HARD";
-		}
+		
+		diffText.text = diffs[curDifficulty].toUpperCase();
 	}
 
 	function changeSelection(change:Int = 0)
 	{
-
 		// NGio.logEvent('Fresh');
 		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 
@@ -310,6 +319,7 @@ class FreeplayState extends MusicBeatState
 				// item.setGraphicSize(Std.int(item.width));
 			}
 		}
+		changeDiff();
 	}
 }
 
