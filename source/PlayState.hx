@@ -245,7 +245,7 @@ class PlayState extends MusicBeatState
 		trace(SONG.stage);
 		if(SONG.stage != null){
 			if(FileSystem.exists("mods/" + curmodfolder + "/stages/" + SONG.stage + ".hx")){
-				HscriptStage = new HscriptUtilities();
+				HscriptStage = new HscriptUtilities(this);
 				HscriptStage.init(this);
 				HscriptStage.execute(File.getContent("mods/" + curmodfolder + "/stages/" + SONG.stage + ".hx"));
 				HscriptStage.RunFunct("init");
