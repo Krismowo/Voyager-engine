@@ -213,6 +213,17 @@ class TitleState extends MusicBeatState
 
 		var firstArray:Array<String> = fullText.split('\n');
 		var swagGoodArray:Array<Array<String>> = [];
+		var time:Date = Date.now();
+		var funnything:String = "";
+		if(time.getDate() == 18 && time.getMonth() == 12){
+			funnything = "it is christmas!";
+		}else{
+			funnything = "TwT it isnt christmas :(";
+		}
+		trace(time.getDate() + " is da date " + time.getMonth() + " is da month, " + funnything);
+		if(time.getDate() == 18 && time.getMonth() == 12){//we guessin that christmas is indeed one week away and add it to da array so you can quite possibly get it
+			swagGoodArray.push(["Christmas", "Just a week away!"]);
+		}
 
 		for (i in firstArray)
 		{
@@ -259,11 +270,6 @@ class TitleState extends MusicBeatState
 		{
 			if (gamepad.justPressed.START)
 				pressedEnter = true;
-
-			#if switch
-			if (gamepad.justPressed.B)
-				pressedEnter = true;
-			#end
 		}
 
 		if (pressedEnter && !transitioning && skippedIntro)
@@ -296,7 +302,7 @@ class TitleState extends MusicBeatState
 					FlxG.switchState(new MainMenuState());
 				//}
 			});
-			// FlxG.sound.play(Paths.music('titleShoot'), 0.7);
+	
 		}
 
 		if (pressedEnter && !skippedIntro)
