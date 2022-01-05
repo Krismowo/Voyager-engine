@@ -8,6 +8,7 @@ typedef ModJson = {
     var Icons:Array<String>;
     var Stages:Array<String>;
     var Characters:Array<String>;
+    var GfVersions:Array<String>;
 }
 typedef SongStuff = {
     var SongNames:Array<String>;
@@ -19,6 +20,7 @@ class Mods{
     public static var Splashes:Array<Array<String>> = [];
     public static var Stages:Array<String> = [];
     public static var Characters:Array<String> = [];
+    public static var GfVersions:Array<String> = [];
     public static function init(){
         for(file in FileSystem.readDirectory("mods/")){
             trace("mods/" + file);
@@ -42,6 +44,9 @@ class Mods{
                }
                for (i in json.Characters){
                    Characters.push(i);
+               }
+               for (i in json.GfVersions){
+                   GfVersions.push(i);
                }
             }
         }

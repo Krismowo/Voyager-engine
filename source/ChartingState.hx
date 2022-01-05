@@ -121,6 +121,7 @@ class ChartingState extends MusicBeatState
 				needsVoices: true,
 				player1: 'bf',
 				player2: 'dad',
+				gfVersion: 'gf',
 				speed: 1,
 				stage: "Stage",
 				validScore: false
@@ -234,6 +235,10 @@ class ChartingState extends MusicBeatState
 		for (v in Mods.Stages)
 			stages.push(v);
 
+		var gfVersions:Array<String> = CoolUtil.coolTextFile(Paths.txt('gfVersionList'));
+		for (v in Mods.GfVersions)
+			gfVersions.push(v);
+
 		var player1DropDown = new FlxUIDropDownMenu(10, 100, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{
 			_song.player1 = characters[Std.parseInt(character)];
@@ -248,11 +253,18 @@ class ChartingState extends MusicBeatState
 		player2DropDown.selectedLabel = _song.player2;
 
 		var stageDropDown = new FlxUIDropDownMenu(10, 300, FlxUIDropDownMenu.makeStrIdLabelArray(stages, true), function(stage:String)
-			{
-				_song.stage = stages[Std.parseInt(stage)];
-			});
+		{
+			_song.stage = stages[Std.parseInt(stage)];
+		});
 
 		stageDropDown.selectedLabel = _song.stage;
+
+		var gfDropDown = new FlxUIDropDownMenu(140, 150, FlxUIDropDownMenu.makeStrIdLabelArray(gfVersions, true), function(gf:String)
+		{
+			_song.gfVersion = gfVersions[Std.parseInt(gf)];
+		});
+
+		gfDropDown.selectedLabel = _song.gfVersion;
 
 		var tab_group_song = new FlxUI(null, UI_box);
 		tab_group_song.name = "Song";
@@ -269,6 +281,7 @@ class ChartingState extends MusicBeatState
 		tab_group_song.add(player1DropDown);
 		tab_group_song.add(player2DropDown);
 		tab_group_song.add(stageDropDown);
+		tab_group_song.add(gfDropDown);
 
 		UI_box.addGroup(tab_group_song);
 		UI_box.scrollFactor.set();
@@ -366,11 +379,33 @@ class ChartingState extends MusicBeatState
 			// vocals.stop();
 		}
 
-		FlxG.sound.playMusic(Paths.inst(daSong), 0.6);
+		var modPath:String = null;
+		for (i in Mods.Songs){
+			for (j in i.SongNames)
+				if (_song.song == j && FileSystem.exists("mods/" + i.modDirectory + "/songs/" + j + "/Inst.ogg"))
+				{
+					modPath = "mods/" + i.modDirectory + "/songs/" + j;
+					break;
+				}
+		}
 
-		// WONT WORK FOR TUTORIAL OR TEST SONG!!! REDO LATER
-		vocals = new FlxSound().loadEmbedded(Paths.voices(daSong));
-		FlxG.sound.list.add(vocals);
+		if (modPath != null)
+		{
+			FlxG.sound.playMusic(Sound.fromFile(modPath + '/Inst.ogg'));
+			if (_song.needsVoices && FileSystem.exists(modPath + '/Voices.ogg'))
+			{
+				vocals = new FlxSound().loadEmbedded(Sound.fromFile(modPath + "/Voices.ogg"));
+				FlxG.sound.list.add(vocals);
+			}
+		}
+		else
+		{
+			FlxG.sound.playMusic(Paths.inst(daSong), 0.6);
+
+			// WONT WORK FOR TUTORIAL OR TEST SONG!!! REDO LATER
+			vocals = new FlxSound().loadEmbedded(Paths.voices(daSong));
+			FlxG.sound.list.add(vocals);
+		}
 
 		FlxG.sound.music.pause();
 		vocals.pause();

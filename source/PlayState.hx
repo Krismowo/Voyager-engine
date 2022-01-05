@@ -201,6 +201,12 @@ class PlayState extends MusicBeatState
 				dialogue = CoolUtil.coolTextFile(Paths.txt('thorns/thornsDialogue'));
 		}
 
+		boyfriend = new Boyfriend(770, 450, SONG.player1);
+		gf = new Character(400, 130, SONG.gfVersion);
+		gf.scrollFactor.set(0.95, 0.95);
+
+		dad = new Character(100, 100, SONG.player2);
+
 		#if desktop
 		// Making difficulty text for Discord Rich Presence.
 		switch (storyDifficulty)
@@ -506,27 +512,6 @@ class PlayState extends MusicBeatState
 		    stageCurtains.active = false;
 			add(stageCurtains);
 		}
-		var gfVersion:String = 'gf';
-
-		switch (curStage)
-		{
-			case 'limo':
-				gfVersion = 'gf-car';
-			case 'mall' | 'mallEvil':
-				gfVersion = 'gf-christmas';
-			case 'school':
-				gfVersion = 'gf-pixel';
-			case 'schoolEvil':
-				gfVersion = 'gf-pixel';
-		}
-
-		if (curStage == 'limo')
-			gfVersion = 'gf-car';
-
-		gf = new Character(400, 130, gfVersion);
-		gf.scrollFactor.set(0.95, 0.95);
-
-		dad = new Character(100, 100, SONG.player2);
 
 		var camPos:FlxPoint = new FlxPoint(dad.getGraphicMidpoint().x, dad.getGraphicMidpoint().y);
 
@@ -567,8 +552,6 @@ class PlayState extends MusicBeatState
 				dad.y += 100;
 				camPos.set(dad.getGraphicMidpoint().x + 300, dad.getGraphicMidpoint().y);
 		}
-
-		boyfriend = new Boyfriend(770, 450, SONG.player1);
 
 		// REPOSITIONING PER STAGE
 		switch (curStage)
