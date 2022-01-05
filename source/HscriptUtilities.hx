@@ -3,12 +3,13 @@ import flixel.FlxSprite;
 import flixel.FlxState;
 import hscript.Interp;
 import hscript.Parser;
+import sys.io.File;
+import sys.FileSystem;
 class HscriptUtilities{
     public var interp:Interp;
     public var parser:Parser;
     public function new(){};
     public function init(self:Dynamic){ 
-    //haha im doing stuff that things like psych engine cant cus lua sucks and his lua things code is unreadable (the engine is still good i just hate how some things arent that readable LOL)
         interp = new Interp();
         parser = new Parser();
         set("self", self);
@@ -20,6 +21,8 @@ class HscriptUtilities{
         set("add", self.add);
         set("Paths", Paths);
         set('Math', Math);
+        set('File', File);
+        set('FileSystem', FileSystem);
     }
     public function execute(code:String){
         interp.execute( parser.parseString(code, ".hx") );

@@ -168,6 +168,7 @@ class FreeplayState extends MusicBeatState
 
 	public function addWeek(songs:Array<String>, weekNum:Int, ?songCharacters:Array<String>,?ismod:Bool = false,?modfolder:String = '')
 	{
+		PlayState.curmodfolder = modfolder;
 		if (songCharacters == null)
 			songCharacters = ['bf'];
 
