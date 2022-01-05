@@ -33,9 +33,6 @@ class Character extends FlxSprite
 		var tex:FlxAtlasFrames;
 		antialiasing = true;
 
-		trace(curCharacter);
-		
-		trace(PlayState.curmodfolder);
 		var daPath = 'mods/' + PlayState.curmodfolder + '/characters/' + curCharacter + '.hx';
 		if (FileSystem.exists(daPath))
 		{

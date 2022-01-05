@@ -242,11 +242,12 @@ class PlayState extends MusicBeatState
 		// Updating Discord Rich Presence.
 		DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconRPC);
 		#end
+		trace(SONG.stage);
 		if(SONG.stage != null){
-			if(FileSystem.exists("mods/" + curmodfolder + "/stages/" + curStage + ".hx")){
+			if(FileSystem.exists("mods/" + curmodfolder + "/stages/" + SONG.stage + ".hx")){
 				HscriptStage = new HscriptUtilities();
 				HscriptStage.init(this);
-				HscriptStage.execute(File.getContent("mods/" + curmodfolder + "/stages/" + curStage + ".hx"));
+				HscriptStage.execute(File.getContent("mods/" + curmodfolder + "/stages/" + SONG.stage + ".hx"));
 				HscriptStage.RunFunct("init");
 			}
 		}else{

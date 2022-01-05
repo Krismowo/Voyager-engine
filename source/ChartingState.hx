@@ -227,10 +227,12 @@ class ChartingState extends MusicBeatState
 		stepperBPM.name = 'song_bpm';
 
 		var characters:Array<String> = CoolUtil.coolTextFile(Paths.txt('characterList'));
-		var bonusChars:Bool = FileSystem.exists('mods/' + PlayState.curmodfolder + '/data/characterList.txt');
-		if (bonusChars)
-			for (v in CoolUtil.coolTextFile('mods/' + PlayState.curmodfolder + '/data/characterList.txt', true))
-				characters.push(v);
+		for (v in Mods.Characters)
+			characters.push(v);
+
+		var stages:Array<String> = CoolUtil.coolTextFile(Paths.txt('stageList'));
+		for (v in Mods.Stages)
+			stages.push(v);
 
 		var player1DropDown = new FlxUIDropDownMenu(10, 100, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{
@@ -244,6 +246,13 @@ class ChartingState extends MusicBeatState
 		});
 
 		player2DropDown.selectedLabel = _song.player2;
+
+		var stageDropDown = new FlxUIDropDownMenu(10, 300, FlxUIDropDownMenu.makeStrIdLabelArray(stages, true), function(stage:String)
+			{
+				_song.stage = stages[Std.parseInt(stage)];
+			});
+
+		stageDropDown.selectedLabel = _song.stage;
 
 		var tab_group_song = new FlxUI(null, UI_box);
 		tab_group_song.name = "Song";
@@ -259,6 +268,7 @@ class ChartingState extends MusicBeatState
 		tab_group_song.add(stepperSpeed);
 		tab_group_song.add(player1DropDown);
 		tab_group_song.add(player2DropDown);
+		tab_group_song.add(stageDropDown);
 
 		UI_box.addGroup(tab_group_song);
 		UI_box.scrollFactor.set();
