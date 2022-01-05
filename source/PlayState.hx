@@ -141,8 +141,10 @@ class PlayState extends MusicBeatState
 	var detailsPausedText:String = "";
 	#end
 	public function CallOnScripts(func:String = ''){
-		ModChart.RunFunct(func);
-		HscriptStage.RunFunct(func);
+		if(ModChart != null)
+			ModChart.RunFunct(func);
+		if(HscriptStage != null)
+			HscriptStage.RunFunct(func);
 	}
 	override public function create()
 	{
@@ -2274,7 +2276,7 @@ class PlayState extends MusicBeatState
 	override function stepHit()
 	{
 		super.stepHit();
-		if(!paused && HscriptStage != null)
+		if(!paused)
 			CallOnScripts("stepHit");
 		if (FlxG.sound.music.time > Conductor.songPosition + 20 || FlxG.sound.music.time < Conductor.songPosition - 20)
 		{
@@ -2293,7 +2295,7 @@ class PlayState extends MusicBeatState
 	override function beatHit()
 	{
 		super.beatHit();
-		if(!paused && HscriptStage != null)
+		if(!paused)
 			CallOnScripts("beatHit");
 
 		if (generatedMusic)
