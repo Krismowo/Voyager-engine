@@ -153,7 +153,7 @@ class PlayState extends MusicBeatState
 
 		// var gameCam:FlxCamera = FlxG.camera;
 		camGame = new FlxCamera();
-		camHUD = new FlxCamera();
+		camHUD = new FlxCamera();.
 		camHUD.bgColor.alpha = 0;
 
 		FlxG.cameras.reset(camGame);
@@ -244,6 +244,7 @@ class PlayState extends MusicBeatState
 		#end
 		if(SONG.stage != null){
 			if(FileSystem.exists("mods/" + curmodfolder + "/stages/" + curStage + ".hx")){
+				HscriptStage = new HscriptUtilities();
 				HscriptStage.init(this);
 				HscriptStage.execute(File.getContent("mods/" + curmodfolder + "/stages/" + curStage + ".hx"));
 				HscriptStage.RunFunct("init");
@@ -471,9 +472,12 @@ class PlayState extends MusicBeatState
 		    }
 		    default:
 		    {
-				//if()
-				curStage = "Stage";
-				//lazy rn LOL, will do later
+				if(HscriptStage != null){
+					trace("nya");
+					curStage = SONG.stage;
+				}else{
+					curStage = "Stage";
+				}
 		    }
         }
 
