@@ -146,6 +146,12 @@ class PlayState extends MusicBeatState
 		if(HscriptStage != null)
 			HscriptStage.RunFunct(func);
 	}
+	public function SetOnScripts(variablename:String = 'uhh', variable:Dynamic = "cum"){
+		if(ModChart != null)
+			ModChart.set(variablename,variable);
+		if(HscriptStage != null)
+			HscriptStage.set(variablename,variable);
+	}
 	override public function create()
 	{
 		if (FlxG.sound.music != null)
@@ -1260,8 +1266,10 @@ class PlayState extends MusicBeatState
 
 	override public function update(elapsed:Float)
 	{
-		if(!paused && HscriptStage != null)
+		if(!paused){
+			SetOnScripts("elapsed", elapsed);
 			CallOnScripts("update");
+		}
 		#if !debug
 		perfectMode = false;
 		#end

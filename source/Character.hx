@@ -12,6 +12,7 @@ using StringTools;
 
 class Character extends FlxSprite
 {
+	public var continueAnim:Bool = true;
 	public var animOffsets:Map<String, Array<Dynamic>>;
 	public var debugMode:Bool = false;
 
@@ -603,6 +604,17 @@ class Character extends FlxSprite
 
 	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0):Void
 	{
+		if (isModChar && HscriptCharacter.FunctExists('playAnim')){
+			HscriptCharacter.set('curAnimName', AnimName);
+			HscriptCharacter.set('curAnimForced', Force);
+			HscriptCharacter.set('curAnimReversed', Reversed);
+			HscriptCharacter.set('curAnimStartFrame', Frame);
+			HscriptCharacter.set('continueAnim', continueAnim);
+			HscriptCharacter.RunFunct("playAnim");
+			if(!continueAnim){
+				return;
+			}
+		}
 		animation.play(AnimName, Force, Reversed, Frame);
 
 		var daOffset = animOffsets.get(AnimName);
