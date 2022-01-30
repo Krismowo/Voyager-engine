@@ -31,7 +31,7 @@ class HealthIcon extends FlxSprite
 			else
 				path = "assets/images/icons/icon-face.png";
 
-		if (char.endsWith("pixel.png"))
+		if (path.endsWith("pixel.png"))
 			antialiasing = false;
 
 		loadGraphic(Paths.LoadImage(path), true, 150, 150);
