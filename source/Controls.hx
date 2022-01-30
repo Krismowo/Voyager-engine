@@ -526,6 +526,16 @@ class Controls extends FlxActionSet
 				inline bindKeys(Control.RESET, [BACKSPACE]);
 			case None: // nothing
 			case Custom: // nothing
+				if (Options.SettingsMap.exists("KeyUp")){
+					inline bindKeys(Control.UP, [FlxKey.fromString(Options.SettingsMap.get("KeyUp")), FlxKey.fromString(Options.SettingsMap.get("KeyUpAlt"))]);
+					inline bindKeys(Control.DOWN, [FlxKey.fromString(Options.SettingsMap.get("KeyDown")), FlxKey.fromString(Options.SettingsMap.get("KeyDownAlt"))]);
+					inline bindKeys(Control.LEFT, [FlxKey.fromString(Options.SettingsMap.get("KeyLeft")), FlxKey.fromString(Options.SettingsMap.get("KeyLeftAlt"))]);
+					inline bindKeys(Control.RIGHT, [FlxKey.fromString(Options.SettingsMap.get("KeyRight")), FlxKey.fromString(Options.SettingsMap.get("KeyRight"))]);
+					inline bindKeys(Control.ACCEPT, [Z, SPACE, ENTER]);
+					inline bindKeys(Control.BACK, [BACKSPACE, ESCAPE]);
+					inline bindKeys(Control.PAUSE, [P, ENTER, ESCAPE]);
+					inline bindKeys(Control.RESET, [R]);
+				}
 		}
 		#else
 		switch (scheme)

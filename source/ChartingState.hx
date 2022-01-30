@@ -230,15 +230,15 @@ class ChartingState extends MusicBeatState
 
 		var characters:Array<String> = CoolUtil.coolTextFile(Paths.txt('characterList'));
 		for (v in Mods.Characters)
-			characters.push(v);
+			characters.push(v.ItemName);
 
 		var stages:Array<String> = CoolUtil.coolTextFile(Paths.txt('stageList'));
 		for (v in Mods.Stages)
-			stages.push(v);
+			stages.push(v.ItemName);
 
 		var gfVersions:Array<String> = CoolUtil.coolTextFile(Paths.txt('gfVersionList'));
 		for (v in Mods.GfVersions)
-			gfVersions.push(v);
+			gfVersions.push(v.ItemName);
 
 		var difficulties:Array<String> = ['easy', 'normal', 'hard'];
 		for (i in Mods.CustomDifficulties)

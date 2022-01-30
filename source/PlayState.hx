@@ -1,5 +1,6 @@
 package;
 
+import flixel.group.FlxSpriteGroup;
 import sys.io.File;
 import sys.FileSystem;
 import openfl.media.Sound;
@@ -44,11 +45,12 @@ import lime.utils.Assets;
 import openfl.display.BlendMode;
 import openfl.display.StageQuality;
 import openfl.filters.ShaderFilter;
-
 using StringTools;
 
 class PlayState extends MusicBeatState
 {
+	public var FrontStage:FlxSpriteGroup;
+	public var BehindStage:FlxSpriteGroup;
 	public var HscriptStage:HscriptUtilities;
 	public var ModChart:HscriptUtilities;
 	public static var curStage:String = '';
@@ -154,6 +156,10 @@ class PlayState extends MusicBeatState
 	}
 	override public function create()
 	{
+		
+		FrontStage = new FlxSpriteGroup(0,0);
+		BehindStage = new FlxSpriteGroup(0,0);
+		add(BehindStage);
 		if (FlxG.sound.music != null)
 			FlxG.sound.music.stop();
 
@@ -179,7 +185,7 @@ class PlayState extends MusicBeatState
 		ModChart.init(this);
 		if(FileSystem.exists("mods/" + curmodfolder + "/" + SONG.song + "/script.hx"))
 			ModChart.execute(File.getContent("mods/" + curmodfolder + "/" + SONG.song + "/script.hx"));
-		ModChart.RunFunct("init");
+			ModChart.RunFunct("init");
 		switch (SONG.song.toLowerCase())
 		{
 			case 'tutorial':
@@ -259,6 +265,7 @@ class PlayState extends MusicBeatState
 			if(FileSystem.exists("mods/" + curmodfolder + "/stages/" + SONG.stage + ".hx")){
 				HscriptStage = new HscriptUtilities();
 				HscriptStage.init(this);
+				trace(File.getContent("mods/" + curmodfolder + "/stages/" + SONG.stage + ".hx"));
 				HscriptStage.execute(File.getContent("mods/" + curmodfolder + "/stages/" + SONG.stage + ".hx"));
 				HscriptStage.RunFunct("init");
 			}
@@ -603,7 +610,7 @@ class PlayState extends MusicBeatState
 
 		add(dad);
 		add(boyfriend);
-
+		add(FrontStage);
 		var doof:DialogueBox = new DialogueBox(false, dialogue);
 		// doof.x += 70;
 		// doof.y = FlxG.height * 0.5;
@@ -2308,10 +2315,10 @@ class PlayState extends MusicBeatState
 			}
 			// else
 			// Conductor.changeBPM(SONG.bpm);
-
-			// Dad doesnt interupt his own notes
-			if (SONG.notes[Math.floor(curStep / 16)].mustHitSection)
-				dad.dance();
+			if ( dad.animation.curAnim.finished)
+			{
+				dad.playAnim('idle', true, false, 10);
+			}
 		}
 		// FlxG.log.add('change bpm' + SONG.notes[Std.int(curStep / 16)].changeBPM);
 		wiggleShit.update(Conductor.crochet);

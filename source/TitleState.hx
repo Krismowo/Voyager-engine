@@ -45,7 +45,21 @@ class TitleState extends MusicBeatState
 
 	override public function create():Void
 	{
+		FlxG.save.bind('FunkinVoyager', 'Kitty');
 		Mods.init();
+		Options.init();
+		if (!Options.SettingsMap.exists("KeyUp")){
+			Options.SaveThing("KeyUp", "UP");
+			Options.SaveThing("KeyLeft", "LEFT");
+			Options.SaveThing("KeyDown", "DOWN");
+			Options.SaveThing("KeyRight", "RIGHT");
+			
+			Options.SaveThing("KeyUpAlt", "W");
+			Options.SaveThing("KeyLeftAlt", "A");
+			Options.SaveThing("KeyDownAlt", "S");
+			Options.SaveThing("KeyRightAlt", "D");
+			
+		}
 		if(FlxG.save.data.cache == null){
 			FlxG.save.data.cache = false; //fuck you caching
 		}
@@ -56,8 +70,6 @@ class TitleState extends MusicBeatState
 		// DEBUG BULLSHIT
 
 		super.create();
-
-		FlxG.save.bind('funkin', 'ninjamuffin99');
 
 		Highscore.load();
 

@@ -14,86 +14,52 @@ import lime.utils.Assets;
 
 class OptionsMenu extends MusicBeatState
 {
-	var selector:FlxText;
 	var curSelected:Int = 0;
 
-	var controlsStrings:Array<String> = [];
-
 	private var grpControls:FlxTypedGroup<Alphabet>;
-
 	override function create()
-	{
+	{//File.saveContent(path, fileStr); for later
+	
 		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
-		controlsStrings = CoolUtil.coolTextFile(Paths.txt('controls'));
 		menuBG.color = 0xFFea71fd;
-		menuBG.setGraphicSize(Std.int(menuBG.width * 1.1));
+		menuBG.setGraphicSize(Std.int(menuBG.width * 1.23));
 		menuBG.updateHitbox();
 		menuBG.screenCenter();
 		menuBG.antialiasing = true;
 		add(menuBG);
 
-		/* 
-			grpControls = new FlxTypedGroup<Alphabet>();
-			add(grpControls);
-
-			for (i in 0...controlsStrings.length)
-			{
-				if (controlsStrings[i].indexOf('set') != -1)
-				{
-					var controlLabel:Alphabet = new Alphabet(0, (70 * i) + 30, controlsStrings[i].substring(3) + ': ' + controlsStrings[i + 1], true, false);
-					controlLabel.isMenuItem = true;
-					controlLabel.targetY = i;
-					grpControls.add(controlLabel);
-				}
-				// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
-			}
-		 */
-
+		
+		grpControls = new FlxTypedGroup<Alphabet>();
+		add(grpControls);
+		for (i in 0...Options.SettingsArr.length)
+		{
+			var optionthing:Alphabet = new Alphabet(0, (70 * i),Options.SettingsArr[i][0], true, false );
+			optionthing.isMenuItem = true;
+			optionthing.targetY = i;
+			grpControls.add(optionthing);
+		}
+		changeSelection(0);
 		super.create();
-
-		openSubState(new OptionsSubState());
 	}
 
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
-
-		/* 
-			if (controls.ACCEPT)
-			{
-				changeBinding();
+		if (FlxG.keys.justPressed.ENTER){
+			trace(grpControls.members[curSelected].text);
+			switch(grpControls.members[curSelected].text){
+				case "Controls":
+					openSubState(new ControllSettings());
 			}
-
-			if (isSettingControl)
-				waitingInput();
-			else
-			{
-				if (controls.BACK)
-					FlxG.switchState(new MainMenuState());
-				if (controls.UP_P)
-					changeSelection(-1);
-				if (controls.DOWN_P)
-					changeSelection(1);
-			}
-		 */
-	}
-
-	function waitingInput():Void
-	{
-		if (FlxG.keys.getIsDown().length > 0)
-		{
-			PlayerSettings.player1.controls.replaceBinding(Control.LEFT, Keys, FlxG.keys.getIsDown()[0].ID, null);
 		}
-		// PlayerSettings.player1.controls.replaceBinding(Control)
-	}
-
-	var isSettingControl:Bool = false;
-
-	function changeBinding():Void
-	{
-		if (!isSettingControl)
-		{
-			isSettingControl = true;
+		if (FlxG.keys.justPressed.ESCAPE){
+			FlxG.switchState(new MainMenuState());
+		}
+		if (FlxG.keys.justPressed.DOWN){
+			changeSelection(1);
+		}
+		if (FlxG.keys.justPressed.UP){
+			changeSelection(-1);
 		}
 	}
 

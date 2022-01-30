@@ -33,17 +33,37 @@ class Character extends FlxSprite
 
 		var tex:FlxAtlasFrames;
 		antialiasing = true;
+		var modpathshit = Mods.GetPath(character, Mods.Characters);
+		if (modpathshit != null && modpathshit.ModPath != ""){
+			var daPath = 'mods/' + modpathshit.ModPath + '/characters/' + curCharacter + '.hx';
+				if (FileSystem.exists(daPath))
+				{
+					trace('isModChar');
+					var script = File.getContent(daPath);
+					HscriptCharacter.init(this);
+					HscriptCharacter.execute(script);
+					HscriptCharacter.RunFunct("init");
+					isModChar = true;
+					return;
+				}else{
+					// DAD ANIMATION LOADING CODE
+					tex = Paths.getSparrowAtlas('DADDY_DEAREST');
+					frames = tex;
+					animation.addByPrefix('idle', 'Dad idle dance', 24);
+					animation.addByPrefix('singUP', 'Dad Sing Note UP', 24);
+					animation.addByPrefix('singRIGHT', 'Dad Sing Note RIGHT', 24);
+					animation.addByPrefix('singDOWN', 'Dad Sing Note DOWN', 24);
+					animation.addByPrefix('singLEFT', 'Dad Sing Note LEFT', 24);
 
-		var daPath = 'mods/' + PlayState.curmodfolder + '/characters/' + curCharacter + '.hx';
-		if (FileSystem.exists(daPath))
-		{
-			trace('isModChar');
-			var script = File.getContent(daPath);
-			HscriptCharacter.init(this);
-			HscriptCharacter.execute(script);
-			HscriptCharacter.RunFunct("init");
-			isModChar = true;
-			return;
+					addOffset('idle');
+					addOffset("singUP", -6, 50);
+					addOffset("singRIGHT", 0, 27);
+					addOffset("singLEFT", -10, 10);
+					addOffset("singDOWN", 0, -30);
+
+					playAnim('idle');
+					return;
+			}
 		}
 
 		switch (curCharacter)
@@ -611,6 +631,7 @@ class Character extends FlxSprite
 			HscriptCharacter.set('curAnimStartFrame', Frame);
 			HscriptCharacter.set('continueAnim', continueAnim);
 			HscriptCharacter.RunFunct("playAnim");
+			continueAnim = HscriptCharacter.interp.variables.get('continueAnim');
 			if(!continueAnim){
 				return;
 			}

@@ -1,7 +1,6 @@
 {
     "OverrideSplash": false,
-    "Songs":["funny"],
-    "Icons":["gex"],
+    "Songs":[{"SongName":"funny","Icon":"gex"}],
     "Stages":["nyah"],
     "Characters":["gex"],
     "GfVersions":[],

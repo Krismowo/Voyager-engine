@@ -16,15 +16,24 @@ class HealthIcon extends FlxSprite
 	public function new(char:String = 'bf', isPlayer:Bool = false, ?modfolder:String = '')
 	{
 		super();
-		if(modfolder == ""){
-			modfolder = PlayState.curmodfolder;
-		}
+		trace(char);
+		antialiasing = true;
 		var path:String = "assets/images/icons/icon-" + char +".png";
-		if(FileSystem.exists("mods/" + modfolder + "/images/icons/icon-" + char + ".png")){
-			path = "mods/" + modfolder + "/images/icons/icon-" + char + ".png";
-		}else if(!Assets.exists(path))
+		if (FileSystem.exists("assets/images/icons/icon-" + char +"-pixel.png")){
+			path = "assets/images/icons/icon-" + char +"-pixel.png";
+			antialiasing = false;	
+		}
+		if (FileSystem.exists("mods/" + modfolder + "/images/icons/icon-" + char + ".png")){
+			trace("fucking exists istg");
+			if (FileSystem.exists("mods/" + modfolder + "/images/icons/icon-" + char + "-pixel.png")){
+				path = "mods/" + modfolder + "/images/icons/icon-" + char + "-pixel.png";
+				antialiasing = false;
+			}	
+			else
+				path = "mods/" + modfolder + "/images/icons/icon-" + char + ".png";
+		}
+		else if(!Assets.exists(path))
 			path = "assets/images/icons/icon-face.png";
-		
 		loadGraphic(Paths.LoadImage(path), true, 150, 150);
 
 		//antialiasing = true;

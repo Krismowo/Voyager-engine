@@ -24,7 +24,7 @@ class Alphabet extends FlxSpriteGroup
 	public var text:String = "";
 
 	var _finalText:String = "";
-	var _curText:String = "";
+	public var _curText:String = "";
 
 	public var widthOfWords:Float = FlxG.width;
 
