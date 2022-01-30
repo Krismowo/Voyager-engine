@@ -5,6 +5,8 @@ import sys.FileSystem;
 import lime.utils.Assets;
 import flixel.FlxSprite;
 
+using StringTools;
+
 class HealthIcon extends FlxSprite
 {
 	/**
@@ -18,22 +20,20 @@ class HealthIcon extends FlxSprite
 		super();
 		trace(char);
 		antialiasing = true;
-		var path:String = "assets/images/icons/icon-" + char +".png";
-		if (FileSystem.exists("assets/images/icons/icon-" + char +"-pixel.png")){
-			path = "assets/images/icons/icon-" + char +"-pixel.png";
-			antialiasing = false;	
-		}
+		var path:String = "assets/images/icons/icon-" + char + ".png";
 		if (FileSystem.exists("mods/" + modfolder + "/images/icons/icon-" + char + ".png")){
 			trace("fucking exists istg");
-			if (FileSystem.exists("mods/" + modfolder + "/images/icons/icon-" + char + "-pixel.png")){
-				path = "mods/" + modfolder + "/images/icons/icon-" + char + "-pixel.png";
-				antialiasing = false;
-			}	
-			else
-				path = "mods/" + modfolder + "/images/icons/icon-" + char + ".png";
+			path = "mods/" + modfolder + "/images/icons/icon-" + char + ".png";
 		}
-		else if(!Assets.exists(path))
-			path = "assets/images/icons/icon-face.png";
+		if (!FileSystem.exists(path))
+			if (FileSystem.exists(path.replace(".png", "-pixel.png")))
+				path = path.replace(".png", "-pixel.png");
+			else
+				path = "assets/images/icons/icon-face.png";
+
+		if (char.endsWith("pixel.png"))
+			antialiasing = false;
+
 		loadGraphic(Paths.LoadImage(path), true, 150, 150);
 
 		//antialiasing = true;
