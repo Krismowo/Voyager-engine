@@ -59,6 +59,8 @@ class PlayState extends MusicBeatState
 	public static var storyDifficulty:Int = 1;
 	public static var modsongs:Bool = false;
 	public static var curmodfolder:String = "";
+	
+	public var songMisses:Int = 0;
 
 	var halloweenLevel:Bool = false;
 
@@ -1300,7 +1302,7 @@ class PlayState extends MusicBeatState
 
 		super.update(elapsed);
 
-		scoreTxt.text = "Score:" + songScore;
+		scoreTxt.text = "Score:" + songScore + " Misses:" + songMisses;
 
 		if (FlxG.keys.justPressed.ENTER && startedCountdown && canPause)
 		{
@@ -1612,9 +1614,9 @@ class PlayState extends MusicBeatState
 
 				if (daNote.y < -daNote.height)
 				{
-					if (daNote.tooLate || !daNote.wasGoodHit)
+					if ( (daNote.tooLate || !daNote.wasGoodHit) && daNote.mustPress)
 					{
-						health -= 0.0475;
+						noteMiss(daNote.noteData);
 						vocals.volume = 0;
 					}
 
@@ -1937,8 +1939,8 @@ class PlayState extends MusicBeatState
 									if (controlArray[ignoreList[shit]])
 										inIgnoreList = true;
 								}
-								if (!inIgnoreList)
-									badNoteCheck();
+								//if (!inIgnoreList)
+									//badNoteCheck();
 							}
 						}
 					}
@@ -1991,7 +1993,7 @@ class PlayState extends MusicBeatState
 			}
 			else
 			{
-				badNoteCheck();
+				//badNoteCheck();
 			}
 		}
 
@@ -2076,6 +2078,7 @@ class PlayState extends MusicBeatState
 				gf.playAnim('sad');
 			}
 			combo = 0;
+			songMisses++;
 
 			songScore -= 10;
 
@@ -2083,13 +2086,13 @@ class PlayState extends MusicBeatState
 			// FlxG.sound.play(Paths.sound('missnote1'), 1, false);
 			// FlxG.log.add('played imss note');
 
-			boyfriend.stunned = true;
+			//boyfriend.stunned = true;
 
 			// get stunned for 5 seconds
-			new FlxTimer().start(5 / 60, function(tmr:FlxTimer)
+			/*new FlxTimer().start(5 / 60, function(tmr:FlxTimer)
 			{
 				boyfriend.stunned = false;
-			});
+			});*/
 
 			switch (direction)
 			{
@@ -2130,7 +2133,7 @@ class PlayState extends MusicBeatState
 			goodNoteHit(note);
 		else
 		{
-			badNoteCheck();
+			//badNoteCheck();
 		}
 	}
 
