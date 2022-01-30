@@ -7,7 +7,7 @@ import flixel.FlxG;
  * ...
  * @author ...
  */
-class ControllSettings extends MusicBeatSubstate
+class ControlSettings extends MusicBeatSubstate
 {
 	var curSelected:Int = 0;
 	
