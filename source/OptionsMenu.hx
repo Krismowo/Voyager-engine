@@ -49,7 +49,7 @@ class OptionsMenu extends MusicBeatState
 			trace(grpControls.members[curSelected].text);
 			switch(grpControls.members[curSelected].text){
 				case "Controls":
-					openSubState(new ControllSettings());
+					openSubState(new ControlSettings());
 			}
 		}
 		if (FlxG.keys.justPressed.ESCAPE){

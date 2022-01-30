@@ -51,7 +51,7 @@ class ControlSettings extends MusicBeatSubstate
 		if (FlxG.keys.justPressed.UP){
 			changeSelection(-1);
 		}
-		if (FlxG.keys.justReleased.ENTER && !Options.SettingsMap.exists(grpControls.members[curSelected]._curText)){
+		if (FlxG.keys.justPressed.ENTER && !Options.SettingsMap.exists(grpControls.members[curSelected]._curText)){
 		}
 	}
 
