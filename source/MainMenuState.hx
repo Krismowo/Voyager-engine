@@ -21,7 +21,8 @@ using StringTools;
 class MainMenuState extends MusicBeatState
 {
 	var curSelected:Int = 0;
-
+	var camFollow:FlxObject;
+	
 	var menuItems:FlxTypedGroup<FlxSprite>;
 
 	#if !switch
@@ -31,7 +32,6 @@ class MainMenuState extends MusicBeatState
 	#end
 
 	var magenta:FlxSprite;
-	var camFollow:FlxObject;
 
 	override function create()
 	{
@@ -89,7 +89,7 @@ class MainMenuState extends MusicBeatState
 			menuItem.ID = i;
 			menuItem.screenCenter(X);
 			menuItems.add(menuItem);
-			menuItem.scrollFactor.set();
+			menuItem.scrollFactor.set( 0, 0.15);
 			menuItem.antialiasing = true;
 		}
 

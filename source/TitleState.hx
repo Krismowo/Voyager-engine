@@ -48,22 +48,11 @@ class TitleState extends MusicBeatState
 		FlxG.save.bind('FunkinVoyager', 'Kitty');
 		Mods.init();
 		Options.init();
-		if (!Options.SettingsMap.exists("KeyUp")){
-			Options.SaveThing("KeyUp", "UP");
-			Options.SaveThing("KeyLeft", "LEFT");
-			Options.SaveThing("KeyDown", "DOWN");
-			Options.SaveThing("KeyRight", "RIGHT");
-			
-			Options.SaveThing("KeyUpAlt", "W");
-			Options.SaveThing("KeyLeftAlt", "A");
-			Options.SaveThing("KeyDownAlt", "S");
-			Options.SaveThing("KeyRightAlt", "D");
-			
-		}
 		if(FlxG.save.data.cache == null){
 			FlxG.save.data.cache = false; //fuck you caching
 		}
 		PlayerSettings.init();
+		//PlayerSettings.player1.setKeyboardScheme( Controls.KeyboardScheme.Custom);
 
 		curWacky = FlxG.random.getObject(getIntroTextShit());
 
@@ -257,7 +246,6 @@ class TitleState extends MusicBeatState
 	{
 		if (FlxG.sound.music != null)
 			Conductor.songPosition = FlxG.sound.music.time;
-		// FlxG.watch.addQuick('amp', FlxG.sound.music.amplitude);
 
 		if (FlxG.keys.justPressed.F)
 		{

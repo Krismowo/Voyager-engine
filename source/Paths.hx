@@ -3,12 +3,16 @@ package;
 import openfl.display.BitmapData;
 import openfl.display.Bitmap;
 import openfl.utils.Assets;
+#if sys
 import sys.io.File;
+#end
 import flixel.FlxG;
 import flixel.graphics.frames.FlxAtlasFrames;
 import openfl.utils.AssetType;
 import openfl.utils.Assets as OpenFlAssets;
+#if sys
 import sys.FileSystem;
+#end
 #if haxe4
 import haxe.xml.Access;
 #else
@@ -109,7 +113,11 @@ class Paths
 		return 'songs:assets/songs/${song.toLowerCase()}/Inst.$SOUND_EXT';
 	}
 	inline static public function coolimage(key:String){
+		#if sys
 		if(FileSystem.exists(key)){
+		#elseif html5	
+		if (Assets.exists(key)){
+		#end
 			var bitmap = Assets.getBitmapData(key, false);
 			var flxthing:FlxGraphic = FlxGraphic.fromBitmapData(bitmap);
 			return flxthing;

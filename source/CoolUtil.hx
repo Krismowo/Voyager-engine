@@ -1,8 +1,9 @@
 package;
 
 import lime.utils.Assets;
+#if sys
 import sys.io.File;
-
+#end
 using StringTools;
 
 class CoolUtil
@@ -17,9 +18,11 @@ class CoolUtil
 	public static function coolTextFile(path:String, mod:Bool = false):Array<String>
 	{
 		var daList:Array<String>;
+		#if sys
 		if (mod)
 			daList = File.getContent(path).trim().split('\n');
 		else
+		#end 
 			daList = Assets.getText(path).trim().split('\n');
 
 		for (i in 0...daList.length)

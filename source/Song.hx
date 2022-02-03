@@ -1,13 +1,14 @@
 package;
 
-import sys.io.File;
 import haxe.io.Path;
 import Section.SwagSection;
 import haxe.Json;
 import haxe.format.JsonParser;
 import lime.utils.Assets;
+#if sys
 import sys.FileSystem;
-
+import sys.io.File;
+#end
 using StringTools;
 
 typedef SwagSong =
@@ -85,7 +86,11 @@ class Song
 		}else{
 			PlayState.modsongs = false;
 		}
+		#if sys
 		var rawJson = File.getContent(startFolder + modfolder + "/data/" + songName.toLowerCase() + '/' + jsonInput.toLowerCase() + ".json").trim();
+		#elseif html5
+		var rawJson = Assets.getText(startFolder + modfolder + "/data/" + songName.toLowerCase() + '/' + jsonInput.toLowerCase() + ".json").trim();
+	    #end
 		var modjson:Bool = false;
 		
 		while (!rawJson.endsWith("}"))

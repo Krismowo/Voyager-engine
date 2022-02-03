@@ -11,32 +11,39 @@ import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
+import flixel.FlxObject;
 
 class OptionsMenu extends MusicBeatState
 {
 	var curSelected:Int = 0;
-
-	private var grpControls:FlxTypedGroup<Alphabet>;
+	var camFollow:FlxObject;
+	private var grpOptions:FlxTypedGroup<Alphabet>;
 	override function create()
 	{//File.saveContent(path, fileStr); for later
-	
+		camFollow = new FlxObject(0, 0, 1, 1);
+		add(camFollow);
+		FlxG.camera.follow(camFollow, null, 0.06);
 		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		menuBG.color = 0xFFea71fd;
 		menuBG.setGraphicSize(Std.int(menuBG.width * 1.23));
 		menuBG.updateHitbox();
 		menuBG.screenCenter();
 		menuBG.antialiasing = true;
+		menuBG.scrollFactor.y = 0.12;
+		menuBG.scrollFactor.x = 0;
 		add(menuBG);
 
 		
-		grpControls = new FlxTypedGroup<Alphabet>();
-		add(grpControls);
+		grpOptions = new FlxTypedGroup<Alphabet>();
+		add(grpOptions);
 		for (i in 0...Options.SettingsArr.length)
 		{
 			var optionthing:Alphabet = new Alphabet(0, (70 * i),Options.SettingsArr[i][0], true, false );
 			optionthing.isMenuItem = true;
 			optionthing.targetY = i;
-			grpControls.add(optionthing);
+			optionthing.targetx = optionthing.x;
+			optionthing.scrollFactor.set( 0, 0.15);
+			grpOptions.add(optionthing);
 		}
 		changeSelection(0);
 		super.create();
@@ -46,14 +53,17 @@ class OptionsMenu extends MusicBeatState
 	{
 		super.update(elapsed);
 		if (FlxG.keys.justPressed.ENTER){
-			trace(grpControls.members[curSelected].text);
-			switch(grpControls.members[curSelected].text){
+			trace(grpOptions.members[curSelected].text);
+			switch(grpOptions.members[curSelected].text){
 				case "Controls":
 					openSubState(new ControlSettings());
 			}
 		}
 		if (FlxG.keys.justPressed.ESCAPE){
-			FlxG.switchState(new MainMenuState());
+			if (this._requestedSubState != null)
+				closeSubState();
+			else
+				FlxG.switchState(new MainMenuState());
 		}
 		if (FlxG.keys.justPressed.DOWN){
 			changeSelection(1);
@@ -70,15 +80,15 @@ class OptionsMenu extends MusicBeatState
 		curSelected += change;
 
 		if (curSelected < 0)
-			curSelected = grpControls.length - 1;
-		if (curSelected >= grpControls.length)
+			curSelected = grpOptions.length - 1;
+		if (curSelected >= grpOptions.length)
 			curSelected = 0;
 
 		// selector.y = (70 * curSelected) + 30;
 
 		var bullShit:Int = 0;
 
-		for (item in grpControls.members)
+		for (item in grpOptions.members)
 		{
 			item.targetY = bullShit - curSelected;
 			bullShit++;
@@ -89,8 +99,11 @@ class OptionsMenu extends MusicBeatState
 			if (item.targetY == 0)
 			{
 				item.alpha = 1;
-				// item.setGraphicSize(Std.int(item.width));
+				camFollow.setPosition(item.getGraphicMidpoint().x, item.getGraphicMidpoint().y);
 			}
 		}
+	}
+	function closesub(){
+		closeSubState();
 	}
 }

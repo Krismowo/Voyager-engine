@@ -3,55 +3,74 @@ import flixel.FlxSprite;
 import flixel.util.FlxColor;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.FlxG;
+import flixel.FlxObject;
+import flixel.input.keyboard.FlxKey;
 /**
  * ...
  * @author ...
  */
+using StringTools;
 class ControlSettings extends MusicBeatSubstate
 {
 	var curSelected:Int = 0;
 	
 	private var grpControls:FlxTypedGroup<Alphabet>;
 	public var controlsStrings:Array<String>;
+	public var awaitingkey:Bool = false;
 	public function new(){
 		super();
 	}
 	override function create(){
-		var transbg:FlxSprite = new FlxSprite(0, 0).makeGraphic( FlxG.width, FlxG.height, 0xFF000000);
-		transbg.alpha = 0.6;
-		add(transbg);
+		var blaccground = new FlxSprite((FlxG.width / 2), 0).makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+		blaccground.scrollFactor.x = 0;
+		blaccground.scrollFactor.y = 0;
+		blaccground.alpha = 0.25;
+		add(blaccground);
+
 		grpControls = new FlxTypedGroup<Alphabet>();
 		add(grpControls);
+		trace(CoolUtil.coolTextFile(Paths.txt('controls')));
 		controlsStrings = CoolUtil.coolTextFile(Paths.txt('controls'));
 		for (i in 0...controlsStrings.length)
 		{
-			if (controlsStrings[i].indexOf('set') != -1)
-			{
-				var controlLabel:Alphabet = new Alphabet(0, (70 * i) + 30, controlsStrings[i].substring(3), true, false);
-				controlLabel.isMenuItem = true;
-				var label2:Alphabet = new Alphabet(0, (70 * i) + 30, controlsStrings[i + 1], false, false);
-				label2.isMenuItem = true;
-				controlLabel.targetY = i;
-				label2.targetY = i + 1;
-				//controlLabel.x += 50;
-				grpControls.add(label2);
-				grpControls.add(controlLabel);
-			}
+			var label2:Alphabet = new Alphabet(0, (70 * i) + 30, controlsStrings[i], true, false);
+			label2.ID = i;
+			label2.isMenuItem = true;
+			label2.targetX = 0;
+			label2.scrollFactor.set( 0, 0.15);
+			grpControls.add(label2);
 		}
+		changeSelection(0);
 	}
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
-		if (FlxG.keys.justPressed.ESCAPE){
-			FlxG.switchState(new MainMenuState());
-		}
-		if (FlxG.keys.justPressed.DOWN){
-			changeSelection(1);
-		}
-		if (FlxG.keys.justPressed.UP){
-			changeSelection(-1);
-		}
-		if (FlxG.keys.justPressed.ENTER && !Options.SettingsMap.exists(grpControls.members[curSelected]._curText)){
+		if(!awaitingkey){
+			if (FlxG.keys.justPressed.ESCAPE){
+				FlxG.state.closeSubState();
+			}
+			if (FlxG.keys.justPressed.DOWN){
+				changeSelection(1);
+			}
+			if (FlxG.keys.justPressed.UP){
+				changeSelection(-1);
+			}
+			if (FlxG.keys.justPressed.ENTER){ //&& !Options.SettingsMap.exists(grpControls.members[curSelected]._curText)){
+				awaitingkey = true;
+				
+			}
+		}else{
+			
+			if (FlxG.keys.justPressed.ESCAPE){
+				FlxG.state.closeSubState();
+			}
+			var keyPressed:Int = FlxG.keys.firstJustPressed();
+			if (keyPressed > -1) {
+				Options.keyBinds.set(controlsStrings[curSelected].trim() , keyPressed);
+				PlayerSettings.player1.setKeyboardScheme( Controls.KeyboardScheme.Custom);
+				Options.saveKeys();
+				awaitingkey = false;
+			}
 		}
 	}
 
@@ -81,10 +100,11 @@ class ControlSettings extends MusicBeatSubstate
 			if (item.targetY == 0)
 			{
 				item.alpha = 1;
-				// item.setGraphicSize(Std.int(item.width));
+			}
+			if (item.ID == curSelected){
+				trace(item.getGraphicMidpoint().y);
 			}
 		}
 	}
-	
 	
 }

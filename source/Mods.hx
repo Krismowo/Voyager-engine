@@ -1,7 +1,10 @@
 package;
+#if sys
 import sys.io.File;
-import haxe.Json;
 import sys.FileSystem;
+#end
+import haxe.Json;
+import lime.utils.Assets;
 typedef ModJson = {
     var Songs:Array<SongsShiz>;
     var AddsSplashes:Bool;
@@ -46,9 +49,15 @@ class Mods{
         Characters = [];
         GfVersions = [];
         CustomDifficulties = [];
+		#if sys
         for(file in FileSystem.readDirectory("mods/")){
             trace("mods/" + file);
-            if(FileSystem.exists("mods/" + file + "/pack.json")){
+            if (FileSystem.exists("mods/" + file + "/pack.json")){
+	    #elseif html5
+		for(file in CoolUtil.coolTextFile("mods.txt")){
+            trace("mods/" + file);
+            if (Assets.exists("mods/" + file + "/pack.json")){
+		#end
                 var json:ModJson = Json.parse(File.getContent("mods/" + file + "/pack.json"));
 				var actualsongs:Array<String> = [];
 				for (song in 0...json.Songs.length){
