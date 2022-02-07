@@ -3,6 +3,6 @@ KeyUpAlt
 KeyDown
 KeyDownAlt
 KeyLeft
-KeyleftAlt
+KeyLeftAlt
 KeyRight
 KeyRightAlt

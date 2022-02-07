@@ -21,11 +21,6 @@ class ControlSettings extends MusicBeatSubstate
 		super();
 	}
 	override function create(){
-		var blaccground = new FlxSprite((FlxG.width / 2), 0).makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
-		blaccground.scrollFactor.x = 0;
-		blaccground.scrollFactor.y = 0;
-		blaccground.alpha = 0.25;
-		add(blaccground);
 
 		grpControls = new FlxTypedGroup<Alphabet>();
 		add(grpControls);
@@ -37,6 +32,7 @@ class ControlSettings extends MusicBeatSubstate
 			label2.ID = i;
 			label2.isMenuItem = true;
 			label2.targetX = 0;
+			label2.targetX = 4.5;
 			label2.scrollFactor.set( 0, 0.15);
 			grpControls.add(label2);
 		}
@@ -66,7 +62,7 @@ class ControlSettings extends MusicBeatSubstate
 			}
 			var keyPressed:Int = FlxG.keys.firstJustPressed();
 			if (keyPressed > -1) {
-				Options.keyBinds.set(controlsStrings[curSelected].trim() , keyPressed);
+				Options.keyBinds.set(controlsStrings[curSelected].trim(), keyPressed);
 				PlayerSettings.player1.setKeyboardScheme( Controls.KeyboardScheme.Custom);
 				Options.saveKeys();
 				awaitingkey = false;

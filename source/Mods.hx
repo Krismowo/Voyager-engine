@@ -6,27 +6,25 @@ import sys.FileSystem;
 import haxe.Json;
 import lime.utils.Assets;
 typedef ModJson = {
-    var Songs:Array<SongsShiz>;
+    var Weeks:Array<JsonWeek>;
     var AddsSplashes:Bool;
     var Stages:Array<String>;
     var Characters:Array<String>;
     var GfVersions:Array<String>;
-    var CustomDifficulties:Array<String>;
+    var Dificulties:Array<String>;
 }
-typedef SongStuff = {
-    var SongNames:Array<String>;
-    var modDirectory:String;
-    var Icons:Array<String>;
+typedef JsonWeek = {
+	var WeekName:String;
+	var WeekNumber:Int;
+	var Songs:Array<SongsShiz>;
 }
 typedef SongsShiz = {
 	var SongName:String;
 	var Icon:String; 
 }
-typedef ModItem = {
-	var ItemName:String;
-	var ModPath:String;
-}
+
 class Mods{
+    public static var ModPaths:Array<String> = [];/*
     public static var Songs:Array<SongStuff>;
     public static var Splashes:Array<Array<String>>;
     public static var Stages:Array<ModItem>;
@@ -67,6 +65,7 @@ class Mods{
 				for (song in 0...json.Songs.length){
 					IconShit.push(json.Songs[song].Icon);
 				}
+}
             
                 var songshit:SongStuff = {
                     SongNames: actualsongs,
@@ -97,5 +96,5 @@ class Mods{
                 } 
             }
         }
-    }
+    }*/
 }   

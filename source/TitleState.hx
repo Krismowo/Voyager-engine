@@ -26,7 +26,9 @@ import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import lime.app.Application;
 import openfl.Assets;
-
+import polymod.Polymod;
+import haxe.Json;
+import sys.io.File;
 using StringTools;
 
 class TitleState extends MusicBeatState
@@ -46,7 +48,19 @@ class TitleState extends MusicBeatState
 	override public function create():Void
 	{
 		FlxG.save.bind('FunkinVoyager', 'Kitty');
-		Mods.init();
+		//Mods.init();
+		#if !html5
+		trace("nya");
+		var dirs:Array<String> = [];
+		for(file in sys.FileSystem.readDirectory('mods/')){
+			dirs.push(file);
+			Mods.ModPaths.push("mods/" + file);
+		}
+		Polymod.init({
+		modRoot:"./mods/",
+		dirs:dirs
+		});
+		#end
 		Options.init();
 		if(FlxG.save.data.cache == null){
 			FlxG.save.data.cache = false; //fuck you caching
@@ -225,13 +239,22 @@ class TitleState extends MusicBeatState
 		if(time.getDate() == 18 && time.getMonth() == 12){//we guessin that christmas is indeed one week away and add it to da array so you can quite possibly get it
 			swagGoodArray.push(["Christmas", "Just a week away!"]);
 		}
-
+		var splashes:Array<Array<String>> = [];
+		for(file in sys.FileSystem.readDirectory('mods/')){
+			var json:Mods.ModJson = Json.parse(  File.getContent("mods/" + file + "/pack.json"));
+			if(json.AddsSplashes){
+                var splasheshit:Array<String> =  CoolUtil.coolTextShit(File.getContent("mods/" + file + "/Splashes.txt").split("\n"));
+                for(i in splasheshit){
+					splashes.push(i.split("--"));
+				}
+			}
+		}
 		for (i in firstArray)
 		{
 			swagGoodArray.push(i.split('--'));
 		}
-		if(Mods.Splashes != null && Mods.Splashes != []){
-			for(i in Mods.Splashes){
+		if(splashes != null && splashes != []){
+			for(i in splashes){
 				swagGoodArray.push(i);
 			}
 			trace(swagGoodArray);

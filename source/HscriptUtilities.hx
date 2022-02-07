@@ -25,7 +25,6 @@ class HscriptUtilities{
         set("ModFolder", PlayState.curmodfolder);
         set("FlxSprite", FlxSprite);
         set("ChangeRez", ScaleShit.ReScale);
-        set("Mods", Mods);
         set("Paths", Paths);
         set('Math', Math);
         set('File', File);

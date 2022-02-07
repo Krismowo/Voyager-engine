@@ -15,7 +15,7 @@ typedef SwagSong =
 {
 	var song:String;
 	var notes:Array<SwagSection>;
-	var bpm:Int;
+	var bpm:Float;
 	var needsVoices:Bool;
 	var speed:Float;
 
@@ -26,19 +26,11 @@ typedef SwagSong =
 	var stage:String;
 	var difficulty:String;
 }
-
-typedef SongData =
-{
-	var isModSong:Bool;
-	var Directory:String;
-	var SongName:String;
-}
-
 class Song
 {
 	public var song:String;
 	public var notes:Array<SwagSection>;
-	public var bpm:Int;
+	public var bpm:Float;
 	public var needsVoices:Bool = true;
 	public var speed:Float = 1;
 
@@ -55,42 +47,9 @@ class Song
 		this.bpm = bpm;
 	}
 
-	public static function getSongData(daSong:String):SongData
-	{
-		var balls:SongData = {
-			isModSong: false,
-			Directory: '',
-			SongName: daSong
-		}
-		for (i in Mods.Songs){
-			for (j in i.SongNames)
-				if (daSong == j && FileSystem.exists("mods/" + i.modDirectory + "/songs/" + j + "/Inst.ogg"))
-				{
-					balls.isModSong = true;
-					balls.Directory = i.modDirectory;
-					return balls;
-				}
-		}
-		return balls;
-	}
-
 	public static function loadFromJson(jsonInput:String, ?songName:String):SwagSong
 	{
-		var modSong:SongData = getSongData(songName);
-		var modfolder:String = '';
-		var startFolder:String = modSong.isModSong ? "mods" : "assets";
-		if(startFolder == 'mods'){
-			PlayState.curmodfolder = modSong.Directory;
-			modfolder = "/" + modSong.Directory;
-			PlayState.modsongs = true;
-		}else{
-			PlayState.modsongs = false;
-		}
-		#if sys
-		var rawJson = File.getContent(startFolder + modfolder + "/data/" + songName.toLowerCase() + '/' + jsonInput.toLowerCase() + ".json").trim();
-		#elseif html5
-		var rawJson = Assets.getText(startFolder + modfolder + "/data/" + songName.toLowerCase() + '/' + jsonInput.toLowerCase() + ".json").trim();
-	    #end
+		var rawJson = File.getContent(Paths.modpath("data/" + songName.toLowerCase() + '/' + jsonInput.toLowerCase() + ".json")).trim();
 		var modjson:Bool = false;
 		
 		while (!rawJson.endsWith("}"))

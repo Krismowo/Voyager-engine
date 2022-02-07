@@ -15,15 +15,18 @@ class CoolUtil
 		return difficultyArray[diff];
 	}
 
-	public static function coolTextFile(path:String, mod:Bool = false):Array<String>
+	public static function coolTextFile(path:String):Array<String>
 	{
 		var daList:Array<String>;
-		#if sys
-		if (mod)
-			daList = File.getContent(path).trim().split('\n');
-		else
-		#end 
-			daList = Assets.getText(path).trim().split('\n');
+		daList = coolTextShit(Assets.getText(path).trim().split('\n'));
+
+		return daList;
+	}
+	
+	public static function coolTextShit(shit:Array<String>):Array<String>
+	{
+		var daList:Array<String> = shit;
+		
 
 		for (i in 0...daList.length)
 		{
@@ -32,7 +35,7 @@ class CoolUtil
 
 		return daList;
 	}
-
+	
 	public static function numberArray(max:Int, ?min = 0):Array<Int>
 	{
 		var dumbArray:Array<Int> = [];

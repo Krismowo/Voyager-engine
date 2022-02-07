@@ -34,7 +34,7 @@ class Paths
 		currentLevel = name.toLowerCase();
 	}
 
-	static function getPath(file:String, type:AssetType, library:Null<String>)
+	static public function getPath(file:String, type:AssetType, ?library:Null<String>)
 	{
 		if (library != null)
 			return getLibraryPath(file, library);
@@ -52,7 +52,7 @@ class Paths
 
 		return getPreloadPath(file);
 	}
-
+	
 	static public function getLibraryPath(file:String, library = "preload")
 	{
 		return if (library == "preload" || library == "default") getPreloadPath(file); else getLibraryPathForce(file, library);
@@ -123,6 +123,15 @@ class Paths
 			return flxthing;
 		}
 		return null;
+	}
+	public static function modpath(key:String):String{
+		for (i in 0...Mods.ModPaths.length){
+			if (FileSystem.exists(Mods.ModPaths[i]  +"/" + key)){
+				
+				return Mods.ModPaths[i] +"/" + key;
+			}
+		}
+		return"assets/" + key;
 	}
 	inline static public function image(key:String, ?library:String):Dynamic
 	{

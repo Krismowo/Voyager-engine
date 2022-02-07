@@ -4,10 +4,13 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.animation.FlxBaseAnimation;
 import flixel.graphics.frames.FlxAtlasFrames;
+import flixel.math.FlxPoint;
 import openfl.utils.Assets;
+import polymod.Polymod;
+import polymod.PolymodConfig;
 import sys.FileSystem;
 import sys.io.File;
-
+import openfl.utils.AssetType;
 using StringTools;
 
 class Character extends FlxSprite
@@ -18,7 +21,7 @@ class Character extends FlxSprite
 
 	public var isPlayer:Bool = false;
 	public var curCharacter:String = 'bf';
-
+	public var CamPos:FlxPoint;
 	public var holdTimer:Float = 0;
 	public var HscriptCharacter:HscriptUtilities = new HscriptUtilities();
 	public var isModChar:Bool = false;
@@ -30,12 +33,11 @@ class Character extends FlxSprite
 		animOffsets = new Map<String, Array<Dynamic>>();
 		curCharacter = character;
 		this.isPlayer = isPlayer;
-
+		CamPos = new FlxPoint( 0,0);
 		var tex:FlxAtlasFrames;
 		antialiasing = true;
-		var modpathshit = Mods.GetPath(character, Mods.Characters);
-		if (modpathshit != null && modpathshit.ModPath != ""){
-			var daPath = 'mods/' + modpathshit.ModPath + '/characters/' + curCharacter + '.hx';
+		if (Paths.modpath("characters/" + curCharacter+ ".hx") != "assets/chatacters/" + curCharacter+ ".hx" && FileSystem.exists(Paths.modpath("characters/" + curCharacter+ ".hx"))){
+			var daPath = Paths.modpath("characters/" + curCharacter + ".hx");
 				if (FileSystem.exists(daPath))
 				{
 					trace('isModChar');
@@ -43,6 +45,9 @@ class Character extends FlxSprite
 					HscriptCharacter.init(this);
 					HscriptCharacter.execute(script);
 					HscriptCharacter.RunFunct("init");
+					if (CamPos.x == 0 && CamPos.y == 0){
+						CamPos = getMidpoint();
+					}
 					isModChar = true;
 					return;
 				}else{
@@ -574,7 +579,7 @@ class Character extends FlxSprite
 				flipX = true;
 			}
 		}
-
+		CamPos = getMidpoint();
 		dance();
 
 		if (isPlayer)

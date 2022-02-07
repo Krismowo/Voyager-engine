@@ -13,18 +13,18 @@ import flixel.util.FlxColor;
 import lime.utils.Assets;
 import flixel.FlxObject;
 
-class OptionsMenu extends MusicBeatState
+class OptionsMenu extends MusicBeatState 
 {
 	var curSelected:Int = 0;
-	var camFollow:FlxObject;
 	private var grpOptions:FlxTypedGroup<Alphabet>;
 	override function create()
 	{//File.saveContent(path, fileStr); for later
-		camFollow = new FlxObject(0, 0, 1, 1);
-		add(camFollow);
-		FlxG.camera.follow(camFollow, null, 0.06);
+		var blaccground = new FlxSprite((FlxG.width / 2), 0).makeGraphic(FlxG.width, FlxG.height, 0xFFffff73);
+		blaccground.scrollFactor.x = 0;
+		blaccground.scrollFactor.y = 0;
+		blaccground.alpha = 0.45;
 		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
-		menuBG.color = 0xFFea71fd;
+		menuBG.color = 0xFF73ff8f;
 		menuBG.setGraphicSize(Std.int(menuBG.width * 1.23));
 		menuBG.updateHitbox();
 		menuBG.screenCenter();
@@ -32,6 +32,10 @@ class OptionsMenu extends MusicBeatState
 		menuBG.scrollFactor.y = 0.12;
 		menuBG.scrollFactor.x = 0;
 		add(menuBG);
+		add(blaccground);
+		var devider = new FlxSprite(0, 0).makeGraphic( 15, FlxG.height, FlxColor.BLACK);
+		devider.x = (FlxG.width / 2) - (devider.width / 2);
+		add(devider);
 
 		
 		grpOptions = new FlxTypedGroup<Alphabet>();
@@ -40,8 +44,8 @@ class OptionsMenu extends MusicBeatState
 		{
 			var optionthing:Alphabet = new Alphabet(0, (70 * i),Options.SettingsArr[i][0], true, false );
 			optionthing.isMenuItem = true;
-			optionthing.targetY = i;
-			optionthing.targetx = optionthing.x;
+			optionthing.targetY = i / 2;
+			optionthing.targetX = 1;
 			optionthing.scrollFactor.set( 0, 0.15);
 			grpOptions.add(optionthing);
 		}
@@ -99,7 +103,6 @@ class OptionsMenu extends MusicBeatState
 			if (item.targetY == 0)
 			{
 				item.alpha = 1;
-				camFollow.setPosition(item.getGraphicMidpoint().x, item.getGraphicMidpoint().y);
 			}
 		}
 	}

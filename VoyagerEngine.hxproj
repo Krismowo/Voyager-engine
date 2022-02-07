@@ -4,7 +4,7 @@
   <output>
     <movie outputType="CustomBuild" />
     <movie input="" />
-    <movie path="project.xml" />
+    <movie path="Project.xml" />
     <movie fps="30" />
     <movie width="800" />
     <movie height="600" />
@@ -19,6 +19,7 @@
     <class path="E:\HaxeShitUwU\haxe\lib\flixel\4,10,0" />
     <class path="E:\HaxeShitUwU\haxe\lib\openfl\9,1,0\src" />
     <class path="E:\HaxeShitUwU\haxe\lib\lime\7,9,0\src" />
+    <class path="E:\HaxeShitUwU\haxe\lib\polymod\1,4,1" />
     <class path="E:\HaxeShitUwU\haxe\lib\flixel-addons\2,11,0" />
     <class path="E:\HaxeShitUwU\haxe\lib\hscript\2,4,0" />
     <class path="E:\HaxeShitUwU\haxe\lib\flixel-ui\2,4,0" />
@@ -29,7 +30,7 @@
   </classpaths>
   <!-- Build options -->
   <build>
-    <option directives="flixel=4.10.0&#xA;openfl=9.1.0&#xA;lime=7.9.0&#xA;flixel-addons=2.11.0&#xA;hscript=2.4.0&#xA;flixel-ui=2.4.0&#xA;linc_discord-rpc=1.0.0&#xA;discord_rpc=1.0.0&#xA;hxcpp=4.2.1&#xA;PRELOAD_ALL&#xA;lime-openal&#xA;native&#xA;lime-curl&#xA;openfl-native&#xA;openfl-disable-handle-error&#xA;lime-harfbuzz&#xA;FLX_NO_FOCUS_LOST_SCREEN&#xA;tools=7.9.0&#xA;lime-cairo&#xA;lime-opengl&#xA;no-compilation&#xA;lime-native&#xA;lime-vorbis&#xA;lime-cffi&#xA;fdb&#xA;windows&#xA;desktop" />
+    <option directives="flixel=4.10.0&#xA;openfl=9.1.0&#xA;lime=7.9.0&#xA;polymod=1.4.1&#xA;flixel-addons=2.11.0&#xA;hscript=2.4.0&#xA;flixel-ui=2.4.0&#xA;linc_discord-rpc=1.0.0&#xA;discord_rpc=1.0.0&#xA;hxcpp=4.2.1&#xA;PRELOAD_ALL&#xA;lime-openal&#xA;native&#xA;lime-curl&#xA;openfl-native&#xA;openfl-disable-handle-error&#xA;lime-harfbuzz&#xA;hscriptPos=true&#xA;FLX_NO_FOCUS_LOST_SCREEN&#xA;tools=7.9.0&#xA;lime-cairo&#xA;lime-opengl&#xA;no-compilation&#xA;lime-native&#xA;lime-vorbis&#xA;lime-cffi&#xA;fdb&#xA;windows&#xA;desktop" />
     <option flashStrict="False" />
     <option noInlineOnDebug="False" />
     <option mainClass="ApplicationMain" />

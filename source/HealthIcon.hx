@@ -1,10 +1,12 @@
 package;
-
+import openfl.utils.AssetType;
 import sys.io.File;
 import sys.FileSystem;
 import lime.utils.Assets;
 import flixel.FlxSprite;
-
+import openfl.utils.Assets;
+import flixel.FlxG;
+import flixel.FlxG;
 using StringTools;
 
 class HealthIcon extends FlxSprite
@@ -20,21 +22,18 @@ class HealthIcon extends FlxSprite
 		super();
 		trace(char);
 		antialiasing = true;
-		var path:String = "assets/images/icons/icon-" + char + ".png";
-		if (FileSystem.exists("mods/" + modfolder + "/images/icons/icon-" + char + ".png")){
-			trace("fucking exists istg");
-			path = "mods/" + modfolder + "/images/icons/icon-" + char + ".png";
-		}
-		if (!FileSystem.exists(path))
-			if (FileSystem.exists(path.replace(".png", "-pixel.png")))
-				path = path.replace(".png", "-pixel.png");
+		trace("fucking exists istg");
+		var icnpath = "images/icons/icon-" + char + ".png";
+		if (!FileSystem.exists(Paths.modpath(icnpath)))
+			if (FileSystem.exists(Paths.modpath(icnpath.replace(".png", "-pixel.png"))))
+				icnpath = icnpath.replace(".png", "-pixel.png");
 			else
-				path = "assets/images/icons/icon-face.png";
+				icnpath = "images/icons/icon-face.png";
 
-		if (path.endsWith("pixel.png"))
+		if (icnpath.endsWith("pixel.png"))
 			antialiasing = false;
-
-		loadGraphic(Paths.LoadImage(path), true, 150, 150);
+		trace(icnpath);
+		loadGraphic(FlxG.bitmap.add(Paths.LoadImage(Paths.modpath(icnpath))), true, 150, 150);
 
 		//antialiasing = true;
 		animation.add(char, [0, 1], 0, false, isPlayer);

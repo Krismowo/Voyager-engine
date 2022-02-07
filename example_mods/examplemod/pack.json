@@ -1,8 +1,16 @@
 {
-    "OverrideSplash": false,
-    "Songs":[{"SongName":"funny","Icon":"gex"}],
+    "AddsSplashes": false,
+    "Weeks":[
+		{
+			"Songs":[
+			{"SongName":"funny","Icon":"gex"}
+			],
+			"WeekNumber":7,
+			"WeekName":"Nya~"
+		}
+	],
     "Stages":["nyah"],
     "Characters":["gex"],
     "GfVersions":[],
-    "CustomDifficulties":[]
+    "Dificulties":["easy", "normal", "hard"]
 }

@@ -18,8 +18,8 @@ class Options
 		'KeyDowntAlt' => S,
 		'KeyUptAlt' => W,
 	];
-	public static function init(){
-		if (FlxG.save.data.KeyUp == null){
+	public static function init(?forceresetopts:Bool = false){
+		if (FlxG.save.data.KeyUp == null || forceresetopts){
 			trace("uhoh");
 			FlxG.save.data.KeyUp =  UP;
 			FlxG.save.data.KeyLeft = LEFT;

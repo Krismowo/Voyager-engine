@@ -76,7 +76,7 @@ class ChartingState extends MusicBeatState
 	**/
 	var curSelectedNote:Array<Dynamic>;
 
-	var tempBpm:Int = 0;
+	var tempBpm:Float = 0;
 
 	var vocals:FlxSound;
 
@@ -229,21 +229,33 @@ class ChartingState extends MusicBeatState
 		stepperBPM.name = 'song_bpm';
 
 		var characters:Array<String> = CoolUtil.coolTextFile(Paths.txt('characterList'));
-		for (v in Mods.Characters)
-			characters.push(v.ItemName);
 
 		var stages:Array<String> = CoolUtil.coolTextFile(Paths.txt('stageList'));
-		for (v in Mods.Stages)
-			stages.push(v.ItemName);
 
 		var gfVersions:Array<String> = CoolUtil.coolTextFile(Paths.txt('gfVersionList'));
-		for (v in Mods.GfVersions)
-			gfVersions.push(v.ItemName);
 
 		var difficulties:Array<String> = ['easy', 'normal', 'hard'];
-		for (i in Mods.CustomDifficulties)
-			difficulties.push(i);
-
+		for (mod in FileSystem.readDirectory('mods/')){
+			if (FileSystem.exists(mod + "/pack.json")){
+				var JsonShit:Mods.ModJson = Json.parse(Assets.getText(mod + "/pack.json"));
+				difficulties = JsonShit.Dificulties;
+				for (i in JsonShit.GfVersions){
+					gfVersions.push(i);
+				}
+				/*for (i in JsonShit.CustomDifficulties){
+					difficulties.push(i);
+				}*/
+				if (JsonShit.Dificulties != difficulties){
+					difficulties = JsonShit.Dificulties;
+				}
+				for (i in JsonShit.Stages){
+					stages.push(i);
+				}
+				for (i in JsonShit.Characters){
+					characters.push(i);
+				}
+			}
+		}
 		var player1DropDown = new FlxUIDropDownMenu(10, 100, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{
 			_song.player1 = characters[Std.parseInt(character)];
@@ -393,26 +405,11 @@ class ChartingState extends MusicBeatState
 			// vocals.stop();
 		}
 
-		var songData = Song.getSongData(daSong);
-		var modPath:String = (songData.isModSong ? "mods/" + songData.Directory + "/songs/" + daSong : '');
+		FlxG.sound.playMusic(Sound.fromFile(Paths.modpath("songs/" + daSong.toLowerCase() + "/Inst.ogg")), 0.6);
 
-		if (modPath != '')
-		{
-			FlxG.sound.playMusic(Sound.fromFile(modPath + '/Inst.ogg'));
-			if (_song.needsVoices && FileSystem.exists(modPath + '/Voices.ogg'))
-			{
-				vocals = new FlxSound().loadEmbedded(Sound.fromFile(modPath + "/Voices.ogg"));
-				FlxG.sound.list.add(vocals);
-			}
-		}
-		else
-		{
-			FlxG.sound.playMusic(Paths.inst(daSong), 0.6);
-
-			// WONT WORK FOR TUTORIAL OR TEST SONG!!! REDO LATER
-			vocals = new FlxSound().loadEmbedded(Paths.voices(daSong));
-			FlxG.sound.list.add(vocals);
-		}
+		// WONT WORK FOR TUTORIAL OR TEST SONG!!! REDO LATER
+		vocals = new FlxSound().loadEmbedded(Sound.fromFile(Paths.modpath("songs/" + daSong.toLowerCase() + "/Voices.ogg")));
+		FlxG.sound.list.add(vocals);
 
 		FlxG.sound.music.pause();
 		vocals.pause();
@@ -482,9 +479,9 @@ class ChartingState extends MusicBeatState
 			}
 			else if (wname == 'song_bpm')
 			{
-				tempBpm = Std.int(nums.value);
+				tempBpm = nums.value;
 				Conductor.mapBPMChanges(_song);
-				Conductor.changeBPM(Std.int(nums.value));
+				Conductor.changeBPM(nums.value);
 			}
 			else if (wname == 'note_susLength')
 			{
@@ -493,7 +490,7 @@ class ChartingState extends MusicBeatState
 			}
 			else if (wname == 'section_bpm')
 			{
-				_song.notes[curSection].bpm = Std.int(nums.value);
+				_song.notes[curSection].bpm = nums.value;
 				updateGrid();
 			}
 		}
@@ -513,7 +510,7 @@ class ChartingState extends MusicBeatState
 	}*/
 	function sectionStartTime():Float
 	{
-		var daBPM:Int = _song.bpm;
+		var daBPM:Float = _song.bpm;
 		var daPos:Float = 0;
 		for (i in 0...curSection)
 		{
@@ -720,9 +717,9 @@ class ChartingState extends MusicBeatState
 		if (FlxG.keys.justPressed.LEFT || FlxG.keys.justPressed.A)
 			changeSection(curSection - shiftThing);
 
-		bpmTxt.text = bpmTxt.text = Std.string(FlxMath.roundDecimal(Conductor.songPosition / 1000, 2))
+		bpmTxt.text = bpmTxt.text = Std.string(Conductor.songPosition / 1000)
 			+ " / "
-			+ Std.string(FlxMath.roundDecimal(FlxG.sound.music.length / 1000, 2))
+			+ Std.string(FlxG.sound.music.length / 1000)
 			+ "\nSection: "
 			+ curSection;
 		super.update(elapsed);
@@ -888,7 +885,7 @@ class ChartingState extends MusicBeatState
 		else
 		{
 			// get last bpm
-			var daBPM:Int = _song.bpm;
+			var daBPM:Float = _song.bpm;
 			for (i in 0...curSection)
 				if (_song.notes[i].changeBPM)
 					daBPM = _song.notes[i].bpm;

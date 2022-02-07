@@ -1,5 +1,4 @@
 package;
-
 import openfl.media.Sound;
 #if desktop
 import Discord.DiscordClient;
@@ -13,8 +12,10 @@ import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
+import polymod.Polymod;
 import sys.FileSystem;
-
+import sys.io.File;
+import haxe.Json;
 using StringTools;
 
 class FreeplayState extends MusicBeatState
@@ -41,7 +42,7 @@ class FreeplayState extends MusicBeatState
 
 		for (i in 0...initSonglist.length)
 		{
-			songs.push(new SongMetadata(initSonglist[i], 1, 'gf'));
+			songs.push(new SongMetadata(initSonglist[i], 1, 'gf', ["easy", "normal", "hard"]));
 		}
 
 		/* 
@@ -64,25 +65,43 @@ class FreeplayState extends MusicBeatState
 		#end
 
 		if (StoryMenuState.weekUnlocked[2] || isDebug)
-			addWeek(['Bopeebo', 'Fresh', 'Dadbattle'], 1, ['dad']);
+			addWeek(['Bopeebo', 'Fresh', 'Dadbattle'], 1, ['dad'], ["easy", "normal", "hard"]);
 
 		if (StoryMenuState.weekUnlocked[2] || isDebug)
-			addWeek(['Spookeez', 'South', 'Monster'], 2, ['spooky','spooky', 'monster']);
+			addWeek(['Spookeez', 'South', 'Monster'], 2, ['spooky','spooky', 'monster'], ["easy", "normal", "hard"]);
 
 		if (StoryMenuState.weekUnlocked[3] || isDebug)
-			addWeek(['Pico', 'Philly', 'Blammed'], 3, ['pico']);
+			addWeek(['Pico', 'Philly', 'Blammed'], 3, ['pico'], ["easy", "normal", "hard"]);
 
 		if (StoryMenuState.weekUnlocked[4] || isDebug)
-			addWeek(['Satin-Panties', 'High', 'Milf'], 4, ['mom']);
+			addWeek(['Satin-Panties', 'High', 'Milf'], 4, ['mom'], ["easy", "normal", "hard"]);
 
 		if (StoryMenuState.weekUnlocked[5] || isDebug)
-			addWeek(['Cocoa', 'Eggnog', 'Winter-Horrorland'], 5, ['parents', 'parents', 'monster']);
+			addWeek(['Cocoa', 'Eggnog', 'Winter-Horrorland'], 5, ['parents', 'parents', 'monster'], ["easy", "normal", "hard"]);
 
 		if (StoryMenuState.weekUnlocked[6] || isDebug)
-			addWeek(['Senpai', 'Roses', 'Thorns'], 6, ['senpai', 'senpai', 'spirit']);
-		for(song in 0...Mods.Songs.length){
-			addWeek(Mods.Songs[song].SongNames,song + 6,Mods.Songs[song].Icons, true,Mods.Songs[song].modDirectory);
+			addWeek(['Senpai', 'Roses', 'Thorns'], 6, ['senpai', 'senpai', 'spirit'], ["easy", "normal", "hard"]);
+		for (mod in FileSystem.readDirectory('mods/')){
+			if (FileSystem.exists("mods/" + mod + "/pack.json")){
+				var JsonShit:Mods.ModJson = Json.parse(File.getContent("mods/" + mod + "/pack.json"));
+				for (i in 0...JsonShit.Weeks.length){
+					var WeekSongs:Array<String> = [];
+					var WeekIcons:Array<String> = [];
+					
+					for (u in JsonShit.Weeks[i].Songs){
+						WeekSongs.push(u.SongName );
+						WeekIcons.push(u.Icon );
+					}
+					addWeek( WeekSongs, JsonShit.Weeks[i].WeekNumber, WeekIcons, JsonShit.Dificulties);
+					WeekSongs = [];
+					WeekIcons = [];
+				}
+			
+			}
 		}
+		/*for(song in 0...Mods.Songs.length){
+			addWeek(Mods.Songs[song].SongNames,song + 6,Mods.Songs[song].Icons, true,Mods.Songs[song].modDirectory);
+		}*/
 		// LOAD MUSIC
 
 		// LOAD CHARACTERS
@@ -100,10 +119,8 @@ class FreeplayState extends MusicBeatState
 			songText.targetY = i;
 			grpSongs.add(songText);
 			var icon:HealthIcon;
-			if (songs[i].modfolder != null)
-				icon = new HealthIcon(songs[i].songCharacter, false, Mods.GetPath(songs[i].songCharacter, Mods.Characters).ModPath);
-			else
-				icon = new HealthIcon(songs[i].songCharacter, false, songs[i].modfolder);
+			
+			icon = new HealthIcon(songs[i].songCharacter, false);
 			icon.sprTracker = songText;
 
 			// using a FlxGroup is too much fuss!
@@ -163,22 +180,25 @@ class FreeplayState extends MusicBeatState
 		super.create();
 	}
 
-	public function addSong(songName:String, weekNum:Int, songCharacter:String, ?ismod:Bool = false, ?modfolder:String = '')
+	public function addSong(songName:String, weekNum:Int, songCharacter:String, dificulties:Array<String>)
 	{
-		songs.push(new SongMetadata(songName, weekNum, songCharacter, ismod, modfolder));
+		songs.push(new SongMetadata(songName, weekNum, songCharacter, dificulties));
 		if(FlxG.save.data.cache)
 			FlxG.sound.cache(Paths.inst(songName));
 	}
 
-	public function addWeek(songs:Array<String>, weekNum:Int, ?songCharacters:Array<String>,?ismod:Bool = false,?modfolder:String = '')
+	public function addWeek(songs:Array<String>, weekNum:Int, ?songCharacters:Array<String>, dificulties:Array<String>)
 	{
+		if (dificulties == null || dificulties == []){
+			dificulties = ["easy", "normal", "hard"];
+		}
 		if (songCharacters == null)
 			songCharacters = ['bf'];
 
 		var num:Int = 0;
 		for (song in songs)
 		{
-			addSong(song, weekNum, songCharacters[num],ismod,modfolder);
+			addSong(song, weekNum, songCharacters[num], dificulties);
 
 			if (songCharacters.length != 1)
 				num++;
@@ -230,7 +250,7 @@ class FreeplayState extends MusicBeatState
 
 			trace(poop);
 
-			PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
+			PlayState.SONG = Song.loadFromJson(poop.replace("-normal", ""), songs[curSelected].songName.toLowerCase() );
 			PlayState.isStoryMode = false;
 			PlayState.storyDifficulty = curDifficulty;
 
@@ -243,23 +263,7 @@ class FreeplayState extends MusicBeatState
 	function changeDiff(change:Int = 0)
 	{
 		curDifficulty += change;
-		var diffs = ['easy', 'normal', 'hard'];
-		var folder = FileSystem.readDirectory((songs[curSelected].ismod ? 'mods/' + songs[curSelected].modfolder + '/data/' + songs[curSelected].songName.toLowerCase() : 'assets/data/' + songs[curSelected].songName.toLowerCase()));
-		if (!folder.contains(songs[curSelected].songName.toLowerCase() + '.json')) // remove normal if it doesn't exist
-			diffs.remove('normal');
-
-		for (i in diffs) 
-			if (!folder.contains(songs[curSelected].songName.toLowerCase() + '-' + i + '.json') && i != 'normal') // remove easy/hard if it doesn't exist
-				diffs.remove(i);
-
-		for (file in folder) // Add custom difficulties
-		{
-			file = file.replace('.json', '');
-			if (file.startsWith(songs[curSelected].songName.toLowerCase() + '-') && !diffs.contains(file.replace(songs[curSelected].songName.toLowerCase() + '-', '')))
-				diffs.push(file.replace(songs[curSelected].songName.toLowerCase() + '-', ''));
-		}
-		trace(diffs);
-		trace(diffs.length);
+		var diffs = (songs[curSelected].dificulties == []) ? ['easy', 'normal', 'hard'] : songs[curSelected].dificulties;
 		if (curDifficulty < 0)
 			curDifficulty = diffs.length - 1;
 		if (curDifficulty > diffs.length - 1)
@@ -294,10 +298,8 @@ class FreeplayState extends MusicBeatState
 		#end
 
 		#if PRELOAD_ALL
-		if(!songs[curSelected].ismod)
-			FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
-		else
-			FlxG.sound.playMusic(Sound.fromFile("mods/" + songs[curSelected].modfolder + "/songs/" + songs[curSelected].songName + "/Inst.ogg"));
+		trace(Paths.modpath("songs/" + songs[curSelected].songName.toLowerCase().trim() + "/Inst.ogg"));
+		FlxG.sound.playMusic( Sound.fromFile(Paths.modpath("songs/" + songs[curSelected].songName.toLowerCase().trim() + "/Inst.ogg") ) , 0);
 		#end
 
 		var bullShit:Int = 0;
@@ -332,14 +334,12 @@ class SongMetadata
 	public var songName:String = "";
 	public var week:Int = 0;
 	public var songCharacter:String = "";
-	public var ismod:Bool;
-	public var modfolder:String = "";
-	public function new(song:String, week:Int, songCharacter:String, ?ismod:Bool = false, ?modfolder:String = "")
+	public var dificulties:Array<String>;
+	public function new(song:String, week:Int, songCharacter:String, dificulties:Array<String>)
 	{
-		this.modfolder = modfolder;
-		this.ismod = ismod;
 		this.songName = song;
 		this.week = week;
 		this.songCharacter = songCharacter;
+		this.dificulties = dificulties;
 	}
 }
